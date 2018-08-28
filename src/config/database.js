@@ -8,6 +8,7 @@ const pool = new Pool({
   database: 'estoqueando',
   password: 'estoqueando2018',
   port: 5432,
+  ssl: true
 });
 logger.info('Pool iniciado');
 
