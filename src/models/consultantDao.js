@@ -1,6 +1,7 @@
 const logger = require('winston');
 
 const bcrypt = require('bcrypt');
+
 const saltRounds = 10;
 
 class ConsultantDao {
@@ -16,22 +17,21 @@ class ConsultantDao {
       }
       resolve(consultants);
     }));
-
   }
+
   insertConsultant(consultantData) {
     logger.debug(consultantData);
-    var password = consultantData.password;
+    let password = consultantData.password;
 
-    let hash = bcrypt.hashSync(consultantData.password, 10);
-      logger.debug(hash);
-      return new Promise((resolve, reject) => this.connection.query('INSERT INTO CONSULTANT (name, cpf, email, password) VALUES ($1, $2, $3, $4)', [consultantData.name, consultantData.cpf, consultantData.email, hash], (err, consultants) => {
-        if (err) {
-          logger.error(err);
-          reject(err);
-        }
-        resolve(consultants);
-      }));
+    const hash = bcrypt.hashSync(consultantData.password, 10);
+    logger.debug(hash);
+    return new Promise((resolve, reject) => this.connection.query('INSERT INTO CONSULTANT (name, cpf, email, password) VALUES ($1, $2, $3, $4)', [consultantData.name, consultantData.cpf, consultantData.email, hash], (err, consultants) => {
+      if (err) {
+        logger.error(err);
+        reject(err);
+      }
+      resolve(consultants);
+    }));
   }
-
 }
 module.exports = ConsultantDao;
