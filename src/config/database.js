@@ -3,11 +3,11 @@ const logger = require('winston');
 
 
 const pool = new Pool({
-//  user: 'samara',
-//  host: 'estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com',
-//  database: 'estoqueando',
-//  password: 'estoqueando2018',
-  url: 'postgres://samara:estoqueando2018@estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com/estoqueando?sslca=rds-combined-ca-bundle.pem',
+  user: 'samara',
+  host: 'estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com',
+  database: 'estoqueando',
+  password: 'estoqueando2018',
+  //  url: 'postgres://samara:estoqueando2018@estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com/estoqueando?sslca=rds-combined-ca-bundle.pem',
   port: 5432,
 });
 logger.info('Pool iniciado');
