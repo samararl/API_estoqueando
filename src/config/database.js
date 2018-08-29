@@ -8,6 +8,7 @@ const pool = new Pool({
   // database: 'estoqueando',
   // password: 'estoqueando2018',
   url: 'postgres://daqscstutbfqso:859804edd0f85683982ab6833ad7665206522c8b9c247d09518c21f04ae3a8b5@ec2-50-17-194-129.compute-1.amazonaws.com:5432/dbjou3r9pqfb80',
+  ssl: true,
   // port: 5432,
 });
 logger.info('Pool iniciado');
