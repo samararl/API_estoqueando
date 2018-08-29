@@ -3,15 +3,17 @@ const logger = require('winston');
 
 
 const pool = new Pool({
-  user: 'samara',
-  host: 'estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com',
-  database: 'estoqueando',
-  password: 'estoqueando2018',
+//  user: 'samara',
+//  host: 'estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com',
+//  database: 'estoqueando',
+//  password: 'estoqueando2018',
+//  url: "postgres://samara:estoqueando2018@estoqueando.cwldu7bor6j1.us-east-2.rds.amazonaws.com/estoqueando?sslca=amazon-rds-ca-cert.pem"
+
   port: 5432,
-  ssl: true
+  ssl: true,
+
 });
 logger.info('Pool iniciado');
-
 
 
 pool.on('release', () => console.log('pool => conexão retornada'));
