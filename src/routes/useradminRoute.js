@@ -1,17 +1,18 @@
 const express = require('express');
-const brandController = require('../controllers/brandController');
+const useradminController = require('../controllers/useradminController');
 
 const router = express.Router();
 
+
 /**
   * @swagger
-  * /brand/add:
+  * /useradmin/add:
   *   post:
-  *     summary: Cadastro de marca
+  *     summary: Criação de usuário administrador
   *     description:
-  *       "Cadastra uma nova marca à aplicação"
+  *       "Cria um usuário administrador com os dados principais"
   *     tags:
-  *       - Marca - Inserir
+  *       - Usuário administrador - Inserir
   *     parameters:
   *       - name: body
   *         in: body
@@ -20,34 +21,34 @@ const router = express.Router();
   *           type: object
   *           required:
   *             - name
-  *             - segment
-  *             - periodicity
-  *             - description
+  *             - login
+  *             - password
+  *             - permision
   *             - authenticate
   *           properties:
   *             name:
   *               type: string
-  *             segment:
+  *             login:
   *               type: string
-  *             periodicity:
-  *               type: string
-  *             description:
-  *               type: string
+  *             password:
+  *               type: password
+  *             permision:
+  *               type: integer
   *             authenticate:
-  *               type: string
+  *               type: integer
   *
   *           example: {
-  *             "brandData": {
+  *             "useradminData": {
   *               "name": "someName",
-  *               "segment": "someSegment",
-  *               "periodicity": "somPeriodicity",
-  *               "description": "someDescription",
+  *               "login": "someLogin",
+  *               "password": "somePassword",
+  *               "permision": "1",
   *               "authenticate": "$someToken01020304"
   *              }
   *           }
   *     responses:
   *       200:
-  *         description: "Marca cadastrada com sucesso"
+  *         description: "Usuário administrador criado com sucesso"
   *         schema:
   *           type: object
   *           properties:
@@ -58,21 +59,22 @@ const router = express.Router();
   *         examples:
   *           application/json: {
   *             "success": true,
-  *              "message": "Cadastrada com sucesso"
+  *              "message": "Criado com sucesso"
   *           }
   *       500:
-  *         description: Marca não pôde ser cadastrada
+  *         description: Usuário administrador não pôde ser criada
   */
 
-router.post('/add', brandController.post);
+router.post('/add', useradminController.post);
+
 
 /**
   * @swagger
-  * /brand:
+  * /useradmin:
   *   get:
   *     tags:
-  *       - Marca - buscar
-  *     description: Busca todas as marcas cadastradas
+  *       - Usuário administrador - buscar
+  *     description: Busca todos os usuários administradores cadastrados
   *     produces:
   *       - application/json
   *     parameters:
@@ -88,19 +90,19 @@ router.post('/add', brandController.post);
   *               type: string
   *     responses:
   *       200:
-  *         description: Marcas listadas com sucesso
+  *         description: Usuários administradores listados com sucesso
 */
 
+router.get('/', useradminController.get);
 
-router.get('/', brandController.get);
 
 /**
   * @swagger
-  * /brand/{id}:
+  * /useradmin/{id}:
   *   put:
   *     tags:
-  *       - Marca - atualizar
-  *     description: Atualizar determinada marca cadastrada por id
+  *       - Usuário administrador - atualizar
+  *     description: Atualizar determinado usuário administrador cadastrado por id
   *     produces:
   *       - application/json
   *     parameters:
@@ -109,37 +111,35 @@ router.get('/', brandController.get);
   *         required: true
   *         schema:
   *           type: object
-  *           required:
   *             - name
-  *             - segment
-  *             - periodicity
-  *             - description
+  *             - login
+  *             - password
+  *             - permision
   *             - authenticate
   *           properties:
   *             name:
   *               type: string
-  *             segment:
+  *             login:
   *               type: string
-  *             periodicity:
-  *               type: string
-  *             description:
-  *               type: string
+  *             password:
+  *               type: password
+  *             permision:
+  *               type: integer
   *             authenticate:
-  *               type: string
+  *               type: integer
   *     responses:
   *       200:
-  *         description: Marca atualizada com sucesso
+  *         description: Usuário administrador atualizado com sucesso
 */
-router.put('/:id', brandController.put);
-
+router.put('/:id', useradminController.put);
 
 /**
   * @swagger
-  * /brand/{id}:
+  * /useradmin/{id}:
   *   put:
   *     tags:
-  *       - Marca - desativar
-  *     description: Desativar determinada marca cadastrada por id
+  *       - Usuário administrador - desativar
+  *     description: Desativar determinado usuário administrador cadastrado por id
   *     produces:
   *       - application/json
   *     parameters:
@@ -155,10 +155,10 @@ router.put('/:id', brandController.put);
   *               type: string
   *     responses:
   *       200:
-  *         description: Marca desativada com sucesso
+  *         description: Usuário administrador desativado com sucesso
 */
+router.put('/disable/:id', useradminController.disableUseradmin);
+router.delete('/:id', useradminController.delete);
 
-
-router.delete('/:id', brandController.delete);
 
 module.exports = router;

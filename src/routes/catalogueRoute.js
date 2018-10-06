@@ -1,17 +1,16 @@
 const express = require('express');
-const brandController = require('../controllers/brandController');
-
+const catalogueController = require('../controllers/catalogueController');
 const router = express.Router();
 
 /**
   * @swagger
-  * /brand/add:
+  * /catalogue/add:
   *   post:
-  *     summary: Cadastro de marca
+  *     summary: Cadastro de catálogo
   *     description:
-  *       "Cadastra uma nova marca à aplicação"
+  *       "Cadastra um novo catálogo à aplicação"
   *     tags:
-  *       - Marca - Inserir
+  *       - Catálogo - Inserir
   *     parameters:
   *       - name: body
   *         in: body
@@ -19,35 +18,35 @@ const router = express.Router();
   *         schema:
   *           type: object
   *           required:
-  *             - name
-  *             - segment
-  *             - periodicity
-  *             - description
-  *             - authenticate
+  *             - id_brand
+  *             - period_ref
+  *             - year_ref
+  *             - description_ref
+  *             - authenticate 
   *           properties:
-  *             name:
-  *               type: string
-  *             segment:
-  *               type: string
-  *             periodicity:
-  *               type: string
-  *             description:
+  *             id_brand:
+  *               type: int
+  *             period_ref:
+  *               type: int
+  *             year_ref:
+  *               type: int
+  *             description_ref:
   *               type: string
   *             authenticate:
   *               type: string
   *
   *           example: {
-  *             "brandData": {
-  *               "name": "someName",
-  *               "segment": "someSegment",
-  *               "periodicity": "somPeriodicity",
-  *               "description": "someDescription",
+  *             "catalogueData": {
+  *               "id_brand": "someBrandId",
+  *               "period_ref": "somePeriod",
+  *               "year_ref": "someYear",
+  *               "description_ref": "someDescription",
   *               "authenticate": "$someToken01020304"
   *              }
   *           }
   *     responses:
   *       200:
-  *         description: "Marca cadastrada com sucesso"
+  *         description: "Catálogo cadastrado com sucesso"
   *         schema:
   *           type: object
   *           properties:
@@ -58,21 +57,20 @@ const router = express.Router();
   *         examples:
   *           application/json: {
   *             "success": true,
-  *              "message": "Cadastrada com sucesso"
+  *              "message": "Cadastrado com sucesso"
   *           }
   *       500:
-  *         description: Marca não pôde ser cadastrada
+  *         description: Catálogo não pôde ser cadastrado
   */
-
-router.post('/add', brandController.post);
+router.post('/add', catalogueController.post);
 
 /**
   * @swagger
-  * /brand:
+  * /catalogue:
   *   get:
   *     tags:
-  *       - Marca - buscar
-  *     description: Busca todas as marcas cadastradas
+  *       - Catálogo - buscar
+  *     description: Busca todos os catálogos cadastrados
   *     produces:
   *       - application/json
   *     parameters:
@@ -88,19 +86,18 @@ router.post('/add', brandController.post);
   *               type: string
   *     responses:
   *       200:
-  *         description: Marcas listadas com sucesso
+  *         description: Catálogos listados com sucesso
 */
 
-
-router.get('/', brandController.get);
+router.get('/', catalogueController.get);
 
 /**
   * @swagger
-  * /brand/{id}:
+  * /catalogue/{id}:
   *   put:
   *     tags:
-  *       - Marca - atualizar
-  *     description: Atualizar determinada marca cadastrada por id
+  *       - Catálogo - atualizar
+  *     description: Atualizar determinado catálogo cadastrada por id
   *     produces:
   *       - application/json
   *     parameters:
@@ -110,36 +107,36 @@ router.get('/', brandController.get);
   *         schema:
   *           type: object
   *           required:
-  *             - name
-  *             - segment
-  *             - periodicity
-  *             - description
+  *             - id_brand
+  *             - period_ref
+  *             - year_ref
+  *             - description_ref
   *             - authenticate
   *           properties:
-  *             name:
-  *               type: string
-  *             segment:
-  *               type: string
-  *             periodicity:
-  *               type: string
-  *             description:
+  *             id_brand:
+  *               type: int
+  *             period_ref:
+  *               type: int
+  *             year_ref:
+  *               type: int
+  *             description_ref:
   *               type: string
   *             authenticate:
   *               type: string
   *     responses:
   *       200:
-  *         description: Marca atualizada com sucesso
+  *         description: Catálogo atualizado com sucesso
 */
-router.put('/:id', brandController.put);
 
+router.put('/:id', catalogueController.put);
 
 /**
   * @swagger
-  * /brand/{id}:
+  * /catalogue/{id}:
   *   put:
   *     tags:
-  *       - Marca - desativar
-  *     description: Desativar determinada marca cadastrada por id
+  *       - Catálogo - desativar
+  *     description: Desativar determinado catálogo cadastrado por id
   *     produces:
   *       - application/json
   *     parameters:
@@ -155,10 +152,11 @@ router.put('/:id', brandController.put);
   *               type: string
   *     responses:
   *       200:
-  *         description: Marca desativada com sucesso
+  *         description: Catálogo desativado com sucesso
 */
 
+router.put('/disable/:id', catalogueController.disableCatalogue);
 
-router.delete('/:id', brandController.delete);
+router.delete('/:id', catalogueController.delete);
 
 module.exports = router;

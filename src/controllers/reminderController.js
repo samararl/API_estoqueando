@@ -1,53 +1,49 @@
-const BrandDao = require('../models/brandDao');
-const BrandBusiness = require('../business/brandBusiness');
-const logger = require('winston');
+const ReminderDao = require('../models/reminderDao');
+const ReminderBusiness = require('../business/reminderBusiness');
 
 exports.get = (req, res, next) => {
-  new BrandDao(req.connection)
+  new ReminderDao(req.connection)
     .list()
-    .then(brands => res.status(200).json(brands.rows))
-    .catch(brands => res.status(500).json(brands.rows));
+    .then(reminders => res.status(200).json(reminders.rows))
+    .catch(reminders => res.status(500).json(reminders.rows));
 };
 
 exports.put = (req, res) => {
-  new BrandDao(req.connection)
-  .updateBrand(req.params.id, req.body.brandData)
+  new ReminderDao(req.connection)
+  .updateReminder(req.params.id, req.body.reminderData)
   .then(response => res.status(200).json(response))
   .catch(response => res.status(500).json(response));
 };
 
 exports.delete = (req, res) => {
-  new BrandDao(req.connection)
-  .deleteBrand(req.params.id)
+  new ReminderDao(req.connection)
+  .deleteReminder(req.params.id)
   .then(response => res.status(200).json(response))
   .catch(response => res.status(500).json(response));
 };
 
 exports.post = (req, res) => {
+
   const response = {};
   try {
-    new BrandBusiness(req.connection)
-      .validateBrandData(req.body.brandData);
+    new ReminderBusiness(req.connection)
+      .validateReminderData(req.body.reminderData);
     response.success = true;
     response.message = 'Criado com sucesso';
     res.status(200).json(response);
   } catch (error) {
     response.success = false;
-    logger.error(error);
     response.message = error;
     res.status(500).json(response);
   }
 
   /*
-  new BrandDao(req.connection)
-    .insertBrand(req.body.brandData)
+  new ReminderDao(req.connection)
+    .insertReminder(req.body.reminderData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
+    */
 };
-*/
-
-}
-
 
 
 

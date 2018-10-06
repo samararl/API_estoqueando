@@ -1,53 +1,49 @@
-const BrandDao = require('../models/brandDao');
-const BrandBusiness = require('../business/brandBusiness');
-const logger = require('winston');
+const EvaluationDao = require('../models/evaluationDao');
+const EvaluationBusiness = require('../business/evaluationBusiness');
 
 exports.get = (req, res, next) => {
-  new BrandDao(req.connection)
+  new EvaluationDao(req.connection)
     .list()
-    .then(brands => res.status(200).json(brands.rows))
-    .catch(brands => res.status(500).json(brands.rows));
+    .then(evaluations => res.status(200).json(evaluations.rows))
+    .catch(evaluations => res.status(500).json(evaluations.rows));
 };
 
 exports.put = (req, res) => {
-  new BrandDao(req.connection)
-  .updateBrand(req.params.id, req.body.brandData)
+  new EvaluationDao(req.connection)
+  .updateEvaluation(req.params.id, req.body.evaluationData)
   .then(response => res.status(200).json(response))
   .catch(response => res.status(500).json(response));
 };
 
 exports.delete = (req, res) => {
-  new BrandDao(req.connection)
-  .deleteBrand(req.params.id)
+  new EvaluationDao(req.connection)
+  .deleteEvaluation(req.params.id)
   .then(response => res.status(200).json(response))
   .catch(response => res.status(500).json(response));
 };
 
 exports.post = (req, res) => {
+
   const response = {};
   try {
-    new BrandBusiness(req.connection)
-      .validateBrandData(req.body.brandData);
+    new EvaluationBusiness(req.connection)
+      .validateEvaluationData(req.body.evaluationData);
     response.success = true;
     response.message = 'Criado com sucesso';
     res.status(200).json(response);
   } catch (error) {
     response.success = false;
-    logger.error(error);
     response.message = error;
     res.status(500).json(response);
   }
 
   /*
-  new BrandDao(req.connection)
-    .insertBrand(req.body.brandData)
+  new EvaluationDao(req.connection)
+    .insertEvaluation(req.body.evaluationData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
+    */
 };
-*/
-
-}
-
 
 
 

@@ -1,104 +1,109 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const path = require('path');
 const pool = require('./config/database.js');
 const logger = require('./config/logger.js');
 
 const index = require('./routes/index');
-const usersRoute = require('./routes/userRoute');
 const authenticateRoute = require('./routes/authenticateRoute');
+const publicRoutes = require('./routes/publicRoute');
+const personRoute = require('./routes/personRoute');
+const useradminRoute = require('./routes/useradminRoute');
+const catalogueRoute = require('./routes/catalogueRoute');
+const productRoute = require('./routes/productRoute');
+const reminderRoute = require('./routes/reminderRoute');
+const evaluationRoute = require('./routes/evaluationRoute');
+const purchaseorderRoute = require('./routes/purchaseorderRoute');
 const brandRoute = require('./routes/brandRoute');
-const consultantRoute = require('./routes/consultantRoute');
 
 const connectionMiddleware = require('./middleware/connection-middleware');
 
 const app = express();
+const swaggerDefinition = {
+  info: {
+    title: 'Estoqueando API',
+    version: '1.0.0',
+    description: 'Documentação do projeto ESTOQUEANDO',
+  },
+};
+
+const swaggerOptions = {
+  swaggerDefinition,
+  apis: [`${path.resolve(__dirname)}\\routes\\*.js`],
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 logger.info('Aplicação iniciada');
 
-const extendTimeoutMiddleware = (req, res, next) => {
-  const space = ' ';
-  let isFinished = false;
-  let isDataSent = false;
-
-  // Only extend the timeout for API requests
-  if (!req.url.includes('/')) {
-    next();
-    return;
-  }
-
-  res.once('finish', () => {
-    isFinished = true;
-  });
-
-  res.once('end', () => {
-    isFinished = true;
-  });
-
-  res.once('close', () => {
-    isFinished = true;
-  });
-
-  res.on('data', (data) => {
-    // Look for something other than our blank space to indicate that real
-    // data is now being sent back to the client.
-    if (data !== space) {
-      isDataSent = true;
-    }
-  });
-
-  const waitAndSend = () => {
-    logger.debug('entra timeout');
-    setTimeout(() => {
-      // If the response hasn't finished and hasn't sent any data back....
-      if (!isFinished && !isDataSent) {
-        // Need to write the status code/headers if they haven't been sent yet.
-        if (!res.headersSent) {
-          res.writeHead(202);
-        }
-
-        res.write(space);
-
-        // Wait another 15 seconds
-        waitAndSend();
-      }
-    }, 15000);
-  };
-
-  waitAndSend();
-  next();
-};
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(connectionMiddleware(pool));
 
-// Add headers
 app.use((req, res, next) => {
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  // Pass to next layer of middleware
-  next();
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', false);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
+    res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
+    res.end();
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
+    res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Authorization', 'Bearer');
+    next();
+  }
 });
 
-app.use(extendTimeoutMiddleware);
-
+/* Public routes */
 app.use('/', index);
-app.use('/users', usersRoute);
 app.use('/authenticate', authenticateRoute);
+app.use('/public', publicRoutes);
+/* Public routes */
 
+app.use((req, res, next) => {
+  const token = req.body.token || req.query.token || req.headers.authorization;
+  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+    const bearer = token.split(' ');
+    jwt.verify(bearer[1], process.env.SECRET, (err, decoded) => {
+      if (err) {
+        res.status(403).send(
+          {
+            success: false,
+            message: 'Falha ao tentar autenticar o token!',
+          },
+        );
+      }
+      req.decoded = decoded;
+      next();
+    });
+  } else {
+    return res.status(401).send(
+      {
+        success: false,
+        message: 'Não há token.',
+      },
+    );
+  }
+});
+
+/* Protected routes */
 app.use('/brand', brandRoute);
-
-app.use('/consultant', consultantRoute);
+app.use('/person', personRoute);
+app.use('/useradmin', useradminRoute);
+app.use('/catalogue', catalogueRoute);
+app.use('/product', productRoute);
+app.use('/reminder', reminderRoute);
+app.use('/evaluation', evaluationRoute);
+app.use('/purchaseorder', purchaseorderRoute);
+/* Protected routes */
 
 module.exports = app;

@@ -1,17 +1,16 @@
 const express = require('express');
-const authenticateController = require('../controllers/authenticateController');
+const personController = require('../controllers/personController');
 
 const router = express.Router();
-
 /**
   * @swagger
-  * /authenticate:
+  * /public/createPerson:
   *   post:
-  *     summary: Autentica um usuário
+  *     summary: Criação de usuário para acesso a aplicação
   *     description:
-  *       "Autenticação de usuário com email e senha para que ele possa utilizar a aplicação"
+  *       "Cria um usuário para acesso a aplicação com os dados principais para o cadastro"
   *     tags:
-  *       - Autenticação
+  *       - Usuário - cadastro
   *     parameters:
   *       - name: body
   *         in: body
@@ -19,23 +18,31 @@ const router = express.Router();
   *         schema:
   *           type: object
   *           required:
+  *             - name
+  *             - cpf
   *             - email
   *             - password
   *           properties:
+  *             name:
+  *               type: string
+  *             cpf:
+  *               type: string
   *             email:
   *               type: string
   *             password:
   *               type: password
   *
   *           example: {
-  *             "accessData": {
+  *             "personData": {
+  *               "name": "someName",
+  *               "cpf": "someCpf",
   *               "email": "someEmail",
   *               "password": "somePassword"
   *              }
   *           }
   *     responses:
   *       200:
-  *         description: "Sucesso na autenticação"
+  *         description: "Usuário criado com sucesso"
   *         schema:
   *           type: object
   *           properties:
@@ -43,17 +50,14 @@ const router = express.Router();
   *               type: boolean
   *             message:
   *               type: string
-  *             token:
-  *               type: string
   *         examples:
   *           application/json: {
   *             "success": true,
-  *              "message": "Token criado",
-  *              "token": "1234"
+  *              "message": "Criado com sucesso"
   *           }
-  *       401:
-  *         description: Email e/ou senha inválidos - Acesso não autorizado
+  *       500:
+  *         description: Usuário não pôde ser criado
   */
- 
-router.post('/', authenticateController.post);
+router.post('/createPerson', personController.post);
+
 module.exports = router;

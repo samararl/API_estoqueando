@@ -1,9 +1,9 @@
 
-const UserDao = require('../models/userDao');
+const PersonDao = require('../models/personDao');
 
-exports.post = (req, res, next) => {
-  new UserDao(req.connection)
-    .authenticateUser(req.body.userData)
+exports.post = (req, res) => {
+  new PersonDao(req.connection)
+    .authenticatePerson(req.body.accessData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(401).json(response));
 };

@@ -1,10 +1,12 @@
 const { Pool } = require('pg');
 const logger = require('winston');
+const dotenv = require('dotenv');
 
+dotenv.config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
+  connectionString: process.env.CONNECTION_STRING,
+  // ssl: true,
 });
 logger.info('Pool iniciado');
 

@@ -1,17 +1,17 @@
 const express = require('express');
-const brandController = require('../controllers/brandController');
+const productController = require('../controllers/productController');
 
 const router = express.Router();
 
 /**
   * @swagger
-  * /brand/add:
+  * /product/add:
   *   post:
-  *     summary: Cadastro de marca
+  *     summary: Cadastro de produto
   *     description:
-  *       "Cadastra uma nova marca à aplicação"
+  *       "Cadastro de produto com os dados principais"
   *     tags:
-  *       - Marca - Inserir
+  *       - Produto - Inserir
   *     parameters:
   *       - name: body
   *         in: body
@@ -19,35 +19,35 @@ const router = express.Router();
   *         schema:
   *           type: object
   *           required:
-  *             - name
-  *             - segment
-  *             - periodicity
+  *             - title
   *             - description
+  *             - price
+  *             - cod_ref
   *             - authenticate
   *           properties:
-  *             name:
-  *               type: string
-  *             segment:
-  *               type: string
-  *             periodicity:
+  *             title:
   *               type: string
   *             description:
+  *               type: string
+  *             price:
+  *               type: decimal
+  *             cod_ref:
   *               type: string
   *             authenticate:
   *               type: string
   *
   *           example: {
-  *             "brandData": {
-  *               "name": "someName",
-  *               "segment": "someSegment",
-  *               "periodicity": "somPeriodicity",
+  *             "productData": {
+  *               "title": "someTitle",
   *               "description": "someDescription",
+  *               "price": "somePrice",
+  *               "cod_ref": "someCodRef",
   *               "authenticate": "$someToken01020304"
   *              }
   *           }
   *     responses:
   *       200:
-  *         description: "Marca cadastrada com sucesso"
+  *         description: "Produto cadastrado com sucesso"
   *         schema:
   *           type: object
   *           properties:
@@ -58,21 +58,21 @@ const router = express.Router();
   *         examples:
   *           application/json: {
   *             "success": true,
-  *              "message": "Cadastrada com sucesso"
+  *              "message": "Criado com sucesso"
   *           }
   *       500:
-  *         description: Marca não pôde ser cadastrada
+  *         description: Produto não pôde ser cadastrado
   */
 
-router.post('/add', brandController.post);
+router.post('/add', productController.post);
 
 /**
   * @swagger
-  * /brand:
+  * /product:
   *   get:
   *     tags:
-  *       - Marca - buscar
-  *     description: Busca todas as marcas cadastradas
+  *       - Produto - buscar
+  *     description: Busca todos os produtos cadastradas
   *     produces:
   *       - application/json
   *     parameters:
@@ -88,19 +88,18 @@ router.post('/add', brandController.post);
   *               type: string
   *     responses:
   *       200:
-  *         description: Marcas listadas com sucesso
+  *         description: Produtos listados com sucesso
 */
 
-
-router.get('/', brandController.get);
+router.get('/', productController.get);
 
 /**
   * @swagger
-  * /brand/{id}:
+  * /product/{id}:
   *   put:
   *     tags:
-  *       - Marca - atualizar
-  *     description: Atualizar determinada marca cadastrada por id
+  *       - Produto - atualizar
+  *     description: Atualizar determinado produto cadastrado por id
   *     produces:
   *       - application/json
   *     parameters:
@@ -110,36 +109,35 @@ router.get('/', brandController.get);
   *         schema:
   *           type: object
   *           required:
-  *             - name
-  *             - segment
-  *             - periodicity
+  *             - title
   *             - description
+  *             - price
+  *             - cod_ref
   *             - authenticate
   *           properties:
-  *             name:
-  *               type: string
-  *             segment:
-  *               type: string
-  *             periodicity:
+  *             title:
   *               type: string
   *             description:
   *               type: string
+  *             price:
+  *               type: decimal
+  *             cod_ref:
+  *               type: string
   *             authenticate:
   *               type: string
   *     responses:
   *       200:
-  *         description: Marca atualizada com sucesso
+  *         description: Produto atualizado com sucesso
 */
-router.put('/:id', brandController.put);
-
+router.put('/:id', productController.put);
 
 /**
   * @swagger
-  * /brand/{id}:
+  * /product/{id}:
   *   put:
   *     tags:
-  *       - Marca - desativar
-  *     description: Desativar determinada marca cadastrada por id
+  *       - Produto - desativar
+  *     description: Desativar determinado produto cadastrado por id
   *     produces:
   *       - application/json
   *     parameters:
@@ -155,10 +153,11 @@ router.put('/:id', brandController.put);
   *               type: string
   *     responses:
   *       200:
-  *         description: Marca desativada com sucesso
+  *         description: Produto desativado com sucesso
 */
 
+router.put('/disable/:id', productController.disableProduct);
 
-router.delete('/:id', brandController.delete);
+router.delete('/:id', productController.delete);
 
 module.exports = router;
