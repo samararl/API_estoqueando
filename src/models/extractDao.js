@@ -1,5 +1,4 @@
 const logger = require('winston');
-
 const tesseract = require('node-tesseract');
 const fs = require('fs');
 

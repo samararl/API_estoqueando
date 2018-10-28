@@ -17,13 +17,14 @@
     "express": "^4.16.3",
     "joi": "^13.6.0",
     "jsonwebtoken": "^8.3.0",
+    "multer": "^0.1.8",
+    "node-tesseract": "^0.2.7",
     "nodemailer": "^4.6.8",
     "pg": "^7.4.3",
     "swagger-jsdoc": "^3.2.3",
     "swagger-ui-express": "^4.0.1",
-    "winston": "^3.0.0",
-    "multer": "^0.1.8",
-    "node-tesseract": "^0.2.7"
+    "tesseract-ocr": "^1.0.0",
+    "winston": "^3.0.0"
   },
   "scripts": {
     "lint": "eslint src/**/*.js",
