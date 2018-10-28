@@ -19,7 +19,7 @@ const productRoute = require('./routes/productRoute');
 const reminderRoute = require('./routes/reminderRoute');
 const evaluationRoute = require('./routes/evaluationRoute');
 const purchaseOrderRoute = require('./routes/purchaseOrderRoute.js');
-const brandRoute = require('./routes/brandRoute');  
+const brandRoute = require('./routes/brandRoute');
 const extractRoute = require('./routes/extractRoute');
 
 const connectionMiddleware = require('./middleware/connectionMiddleware');
