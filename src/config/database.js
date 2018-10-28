@@ -6,7 +6,7 @@ dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.CONNECTION_STRING,
-  // ssl: true,
+  ssl: true,
 });
 logger.info('Pool iniciado');
 
