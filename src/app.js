@@ -13,12 +13,12 @@ const index = require('./routes/index');
 const authenticateRoute = require('./routes/authenticateRoute');
 const publicRoutes = require('./routes/publicRoute');
 const personRoute = require('./routes/personRoute');
-const userAdminRoute = require('./routes/userAdminRoute');
+const userAdminRoute = require('./routes/userAdminRoute.js');
 const catalogueRoute = require('./routes/catalogueRoute');
 const productRoute = require('./routes/productRoute');
 const reminderRoute = require('./routes/reminderRoute');
 const evaluationRoute = require('./routes/evaluationRoute');
-const purchaseOrderRoute = require('./routes/purchaseOrderRoute');
+const purchaseOrderRoute = require('./routes/purchaseOrderRoute.js');
 const brandRoute = require('./routes/brandRoute');  
 const extractRoute = require('./routes/extractRoute');
 

@@ -1,7 +1,7 @@
 const request = require('supertest');
-const app = require('../../src/app');
+const app = require('../app');
 const logger = require('winston');
-const purchaseorderController = require('../controllers/purchaseorderController');
+const purchaseorderController = require('./purchaseorderController');
 
 beforeAll(() => request(app)
   .post('/authenticate')
