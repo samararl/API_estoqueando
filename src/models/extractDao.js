@@ -1,16 +1,7 @@
 const logger = require('winston');
-const tesseractTest = require('node-tesseract');
+
+const tesseract = require('node-tesseract');
 const fs = require('fs');
-
-
-// const tesseract = require('tesseract.js');
-const path = require('path');
-
-const Ttsseract = tesseractTest.create({
-  workerPath: path.join(__dirname, '../tesseract/src/node/worker.js'),
-  langPath: path.join(__dirname, '../tesseract/langs/'),
-  corePath: path.join(__dirname, '../tesseract/src/index.js'),
-});
 
 class ExtractDao {
   constructor(connection) {
