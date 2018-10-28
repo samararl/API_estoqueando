@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const multer = require('multer');
+
 const path = require('path');
 const pool = require('./config/database.js');
 const logger = require('./config/logger.js');
@@ -11,15 +13,16 @@ const index = require('./routes/index');
 const authenticateRoute = require('./routes/authenticateRoute');
 const publicRoutes = require('./routes/publicRoute');
 const personRoute = require('./routes/personRoute');
-const useradminRoute = require('./routes/useradminRoute');
+const userAdminRoute = require('./routes/userAdminRoute');
 const catalogueRoute = require('./routes/catalogueRoute');
 const productRoute = require('./routes/productRoute');
 const reminderRoute = require('./routes/reminderRoute');
 const evaluationRoute = require('./routes/evaluationRoute');
-const purchaseorderRoute = require('./routes/purchaseorderRoute');
+const purchaseOrderRoute = require('./routes/purchaseOrderRoute');
 const brandRoute = require('./routes/brandRoute');
+const extractRoute = require('./routes/extractRoute');
 
-const connectionMiddleware = require('./middleware/connection-middleware');
+const connectionMiddleware = require('./middleware/connectionMiddleware');
 
 const app = express();
 const swaggerDefinition = {
@@ -43,7 +46,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(connectionMiddleware(pool));
-
+app.use(multer(
+  {
+    dest: './.tmp/',
+    inMemory: false,
+  },
+));
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -67,6 +75,8 @@ app.use((req, res, next) => {
 app.use('/', index);
 app.use('/authenticate', authenticateRoute);
 app.use('/public', publicRoutes);
+app.use('/extract', extractRoute);
+
 /* Public routes */
 
 app.use((req, res, next) => {
@@ -93,17 +103,18 @@ app.use((req, res, next) => {
       },
     );
   }
+  return false;
 });
 
 /* Protected routes */
 app.use('/brand', brandRoute);
 app.use('/person', personRoute);
-app.use('/useradmin', useradminRoute);
+app.use('/useradmin', userAdminRoute);
 app.use('/catalogue', catalogueRoute);
 app.use('/product', productRoute);
 app.use('/reminder', reminderRoute);
 app.use('/evaluation', evaluationRoute);
-app.use('/purchaseorder', purchaseorderRoute);
+app.use('/purchaseorder', purchaseOrderRoute);
 /* Protected routes */
 
 module.exports = app;

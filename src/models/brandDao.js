@@ -1,7 +1,4 @@
 const logger = require('winston');
-const bcrypt = require('bcrypt');
-
-const saltRounds = 10;
 
 class BrandDao {
   constructor(connection) {
@@ -49,6 +46,5 @@ class BrandDao {
       resolve(brands);
     }));
   }
-
 }
 module.exports = BrandDao;

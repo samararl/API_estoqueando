@@ -1,14 +1,25 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
 const PersonDao = require('../models/personDao');
 
 
-const personSchema = {
+const insertPersonSchema = {
   name: Joi.string().min(3).max(50).required(),
-  cpf: Joi.string().min(11).required().regex(/^([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})$/),
+  cpf: Joi.string().min(11).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
 };
+const updatePersonSchema = {
+  name: Joi.string().min(3).max(50),
+  flagConsultant: Joi.boolean(),
+  flagPremium: Joi.boolean(),
+  genre: Joi.string().min(1).max(1),
+  cep: Joi.string().min(8).max(8),
+  uf: Joi.string().min(2).max(2),
+  phone: Joi.string().min(6).max(12),
+  photo: Joi.string(),
+};
+
 
 class personBusiness {
   constructor(connection) {
@@ -23,13 +34,13 @@ class personBusiness {
           name: personData.name,
           email: personData.email,
           password: personData.password,
-        }, personSchema, (err) => {
+        }, insertPersonSchema, (err) => {
           if (err) {
             logger.debug(err);
             throw err;
           } else {
             new PersonDao(this.connection)
-              .insertPerson(personData)
+              .insertPerson(personData);
           }
         },
       );
@@ -38,6 +49,29 @@ class personBusiness {
       throw error;
     }
   }
+
+  validatePersonUpdateData(idPerson, personData) {
+    const result = Joi.validate(
+      {
+        name: personData.name,
+        flagConsultant: personData.flagConsultant,
+        flagPremium: personData.flagPremium,
+        genre: personData.genre,
+        cep: personData.cep,
+        uf: personData.uf,
+        phone: personData.phone,
+        photo: personData.phone,
+      }, updatePersonSchema,
+    );
+
+    if (result.error === null) {
+      new PersonDao(this.connection)
+        .updatePerson(idPerson, personData)
+        .then(res => res)
+        .catch(err => err);
+    } else {
+      throw result.error;
+    }
+  }
 }
 module.exports = personBusiness;
-

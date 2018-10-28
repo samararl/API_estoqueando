@@ -1,35 +1,35 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
-const UseradminDao = require('../models/useradminDao');
+const UseradminDao = require('../models/userAdminDao');
 
 
-const useradminSchema = {
+const userAdminSchema = {
   name: Joi.string().min(3).max(50).required(),
   login: Joi.string().min(3).max(15).required(),
   password: Joi.string().min(6).required(),
   permision: Joi.number().integer(),
 };
 
-class useradminBusiness {
+class userAdminBusiness {
   constructor(connection) {
     this.connection = connection;
   }
 
-  validateUseradminData(useradminData) {
+  validateUseradminData(userAdminData) {
     try {
       Joi.validate(
         {
-          name: useradminData.name,
-          login: useradminData.login,
-          password: useradminData.password,
-          permision: useradminData.permision,
-        }, useradminSchema, (err) => {
+          name: userAdminData.name,
+          login: userAdminData.login,
+          password: userAdminData.password,
+          permision: userAdminData.permision,
+        }, userAdminSchema, (err) => {
           if (err) {
             logger.debug(err);
             throw err;
           } else {
             new UseradminDao(this.connection)
-              .insertUseradmin(useradminData)
+              .insertUseradmin(userAdminData);
           }
         },
       );
@@ -39,4 +39,4 @@ class useradminBusiness {
     }
   }
 }
-module.exports = useradminBusiness;
+module.exports = userAdminBusiness;

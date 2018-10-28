@@ -1,8 +1,6 @@
 const logger = require('winston');
 const bcrypt = require('bcrypt');
-
-const saltRounds = 10;
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
 
 
 /* COLOCAR EM OUTRO LUGAR E SÓ CHAMAR AQUI
@@ -17,7 +15,7 @@ let transporter = nodemailer.createTransport({
   tls: { rejectUnauthorized: false }
 });
 */
-class UseradminDao {
+class UserAdminDao {
   constructor(connection) {
     this.connection = connection;
   }
@@ -33,14 +31,13 @@ class UseradminDao {
     }));
   }
 
-  insertUseradmin(useradminData) {
-    logger.debug(useradminData);
-    const password = useradminData.password;
+  insertUseradmin(userAdminData) {
+    logger.debug(userAdminData);
     const active = 1;
 
-    const hash = bcrypt.hashSync(useradminData.password, 10);
+    const hash = bcrypt.hashSync(userAdminData.password, 10);
     logger.debug(hash);
-    return new Promise((resolve, reject) => this.connection.query('INSERT INTO USERADMIN (name, login, password, permision, active) VALUES ($1, $2, $3, $4, $5)', [useradminData.name, useradminData.login, hash, useradminData.permision, active], (err, usersadmin) => {
+    return new Promise((resolve, reject) => this.connection.query('INSERT INTO USERADMIN (name, login, password, permision, active) VALUES ($1, $2, $3, $4, $5)', [userAdminData.name, userAdminData.login, hash, userAdminData.permision, active], (err, usersadmin) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -49,10 +46,9 @@ class UseradminDao {
     }));
   }
 
-  updateUseradmin(id, useradminData) {
-    const password = useradminData.password;
-    const hash = bcrypt.hashSync(useradminData.password, 10);
-    return new Promise((resolve, reject) => this.connection.query('UPDATE USERADMIN SET name = $1, login = $2, password = $3, permision = $4 WHERE id_useradmin = $5', [useradminData.name, useradminData.login, hash, useradminData.permision, id], (err, usersadmin) => {
+  updateUseradmin(id, userAdminData) {
+    const hash = bcrypt.hashSync(userAdminData.password, 10);
+    return new Promise((resolve, reject) => this.connection.query('UPDATE USERADMIN SET name = $1, login = $2, password = $3, permision = $4 WHERE id_useradmin = $5', [userAdminData.name, userAdminData.login, hash, userAdminData.permision, id], (err, usersadmin) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -71,4 +67,4 @@ class UseradminDao {
     }));
   }
 }
-module.exports = UseradminDao;
+module.exports = UserAdminDao;

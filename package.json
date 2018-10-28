@@ -10,6 +10,7 @@
     "testURL": "http://localhost/"
   },
   "dependencies": {
+    "angular-cropper": "^0.9.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
@@ -20,14 +21,16 @@
     "pg": "^7.4.3",
     "swagger-jsdoc": "^3.2.3",
     "swagger-ui-express": "^4.0.1",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "multer": "^0.1.8",
+    "node-tesseract": "^0.2.7"
   },
   "scripts": {
-    "lint": "eslint src/**",
+    "lint": "eslint src/**/*.js",
     "start": "nodemon ./bin/server.js",
     "test": "jest src",
-    "coverage": "jest --collectCoverageFrom=src/controllers/**.js --coverage src",
-    "fix": "eslint --fix"
+    "coverage": "jest --collectCoverageFrom=src/**/**.js --coverage src",
+    "fix": "eslint --fix  src/**.js"
   },
   "repository": {
     "type": "git",

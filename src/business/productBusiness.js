@@ -1,4 +1,4 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
 const ProductDao = require('../models/productDao');
 
@@ -27,7 +27,7 @@ class productBusiness {
             throw err;
           } else {
             new ProductDao(this.connection)
-              .insertProduct(productData)
+              .insertProduct(productData);
           }
         },
       );
@@ -38,4 +38,3 @@ class productBusiness {
   }
 }
 module.exports = productBusiness;
-

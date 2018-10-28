@@ -1,7 +1,4 @@
 const logger = require('winston');
-const bcrypt = require('bcrypt');
-
-const saltRounds = 10;
 
 class ProductDao {
   constructor(connection) {
@@ -9,7 +6,8 @@ class ProductDao {
   }
 
   list() {
-    return new Promise((resolve, reject) => this.connection.query('select A.stock_product as "estoque", A.consultant_product_price as "preco_consultora", B.name as "consultora", C.id_product as "codigo", C.title as "produto", C.description "descricao", C.price as "preco_marca", C.photo as "imagem", C.cod_ref as "codigo_marca" from person_product A inner join person B on A.id_person = B.id_person inner join product C on A.id_product = C.id_product', (err, products) => {
+    //return new Promise((resolve, reject) => this.connection.query('select A.stock_product as "estoque", A.consultant_product_price as "preco_consultora", B.name as "consultora", C.id_product as "codigo", C.title as "produto", C.description "descricao", C.price as "preco_marca", C.photo as "imagem", C.cod_ref as "codigo_marca" from person_product A inner join person B on A.id_person = B.id_person inner join product C on A.id_product = C.id_product', (err, products) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT * FROM PRODUCT', (err, products) => {
       if (err) {
         logger.error(err);
         reject(err);

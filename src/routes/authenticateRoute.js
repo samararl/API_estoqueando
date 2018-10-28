@@ -54,6 +54,6 @@ const router = express.Router();
   *       401:
   *         description: Email e/ou senha inválidos - Acesso não autorizado
   */
- 
+
 router.post('/', authenticateController.post);
 module.exports = router;

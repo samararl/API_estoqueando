@@ -38,7 +38,7 @@ const router = express.Router();
   *             date_ref:
   *               type: date
   *             authenticate:
-  *               type: string  
+  *               type: string
   *           example: {
   *             "evaluationData": {
   *               "id_person": "someConsultant",
@@ -131,7 +131,7 @@ router.get('/', evaluationController.get);
   *             date_ref:
   *               type: date
   *             authenticate:
-  *               type: string  
+  *               type: string
   *     responses:
   *       200:
   *         description: Avaliação atualizada com sucesso

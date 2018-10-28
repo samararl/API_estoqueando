@@ -1,5 +1,5 @@
 const express = require('express');
-const useradminController = require('../controllers/useradminController');
+const userAdminController = require('../controllers/userAdminController');
 
 const router = express.Router();
 
@@ -38,7 +38,7 @@ const router = express.Router();
   *               type: integer
   *
   *           example: {
-  *             "useradminData": {
+  *             "userAdminData": {
   *               "name": "someName",
   *               "login": "someLogin",
   *               "password": "somePassword",
@@ -65,7 +65,7 @@ const router = express.Router();
   *         description: Usuário administrador não pôde ser criada
   */
 
-router.post('/add', useradminController.post);
+router.post('/add', userAdminController.post);
 
 
 /**
@@ -93,7 +93,7 @@ router.post('/add', useradminController.post);
   *         description: Usuários administradores listados com sucesso
 */
 
-router.get('/', useradminController.get);
+router.get('/', userAdminController.get);
 
 
 /**
@@ -131,7 +131,7 @@ router.get('/', useradminController.get);
   *       200:
   *         description: Usuário administrador atualizado com sucesso
 */
-router.put('/:id', useradminController.put);
+router.put('/:id', userAdminController.put);
 
 /**
   * @swagger
@@ -157,8 +157,8 @@ router.put('/:id', useradminController.put);
   *       200:
   *         description: Usuário administrador desativado com sucesso
 */
-router.put('/disable/:id', useradminController.disableUseradmin);
-router.delete('/:id', useradminController.delete);
+router.put('/disable/:id', userAdminController.disableUseradmin);
+router.delete('/:id', userAdminController.delete);
 
 
 module.exports = router;

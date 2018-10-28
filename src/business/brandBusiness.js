@@ -1,4 +1,4 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
 const BrandDao = require('../models/brandDao');
 
@@ -16,7 +16,7 @@ class brandBusiness {
   }
 
   validateBrandData(brandData) {
-    logger.debug("*** Dentro do validateBrandData");
+    logger.debug('*** Dentro do validateBrandData');
     try {
       Joi.validate(
         {
@@ -30,7 +30,7 @@ class brandBusiness {
             throw err;
           } else {
             new BrandDao(this.connection)
-              .insertBrand(brandData)
+              .insertBrand(brandData);
           }
         },
       );

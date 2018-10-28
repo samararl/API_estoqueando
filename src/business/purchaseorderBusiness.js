@@ -1,9 +1,9 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
-const PurchaseorderDao = require('../models/purchaseorderDao');
+const PurchaseorderDao = require('../models/purchaseOrderDao');
 
 
-const purchaseorderSchema = {
+const purchaseOrderSchema = {
   id_consultant: Joi.number().integer().required(),
   id_client: Joi.number().integer(),
   order_date: Joi.date().required(),
@@ -12,28 +12,28 @@ const purchaseorderSchema = {
   status: Joi.string().min(6).required(),
 };
 
-class purchaseorderBusiness {
+class purchaseOrderBusiness {
   constructor(connection) {
     this.connection = connection;
   }
 
-  validatePurchaseorderData(purchaseorderData) {
+  validatePurchaseorderData(purchaseOrderData) {
     try {
       Joi.validate(
         {
-          id_consultant: purchaseorderData.id_consultant,
-          id_client: purchaseorderData.id_client,
-          order_date: purchaseorderData.order_date,
-          total_price: purchaseorderData.total_price,
-          sales_date: purchaseorderData.sales_date,
-          status: purchaseorderData.status,
-        }, purchaseorderSchema, (err) => {
+          id_consultant: purchaseOrderData.id_consultant,
+          id_client: purchaseOrderData.id_client,
+          order_date: purchaseOrderData.order_date,
+          total_price: purchaseOrderData.total_price,
+          sales_date: purchaseOrderData.sales_date,
+          status: purchaseOrderData.status,
+        }, purchaseOrderSchema, (err) => {
           if (err) {
             logger.debug(err);
             throw err;
           } else {
             new PurchaseorderDao(this.connection)
-              .insertPurchaseorder(purchaseorderData)
+              .insertPurchaseorder(purchaseOrderData);
           }
         },
       );
@@ -43,5 +43,4 @@ class purchaseorderBusiness {
     }
   }
 }
-module.exports = purchaseorderBusiness;
-
+module.exports = purchaseOrderBusiness;

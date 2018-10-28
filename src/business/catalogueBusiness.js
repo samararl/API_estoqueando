@@ -1,4 +1,4 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
 const CatalogueDao = require('../models/catalogueDao');
 
@@ -29,7 +29,7 @@ class catalogueBusiness {
             throw err;
           } else {
             new CatalogueDao(this.connection)
-              .insertCatalogue(catalogueData)
+              .insertCatalogue(catalogueData);
           }
         },
       );

@@ -1,4 +1,4 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
 const ReminderDao = require('../models/reminderDao');
 
@@ -6,9 +6,9 @@ const ReminderDao = require('../models/reminderDao');
 const reminderSchema = {
   id_person: Joi.number().integer(),
   reminder_text: Joi.string().min(11).required(),
-  date_ref: Joi.date().required(), 
+  date_ref: Joi.date().required(),
   flag_check: Joi.number().integer().required(),
-  
+
 };
 
 class reminderBusiness {
@@ -30,7 +30,7 @@ class reminderBusiness {
             throw err;
           } else {
             new ReminderDao(this.connection)
-              .insertReminder(reminderData)
+              .insertReminder(reminderData);
           }
         },
       );
@@ -41,4 +41,3 @@ class reminderBusiness {
   }
 }
 module.exports = reminderBusiness;
-

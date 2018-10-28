@@ -1,21 +1,8 @@
 const logger = require('winston');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-const nodemailer = require('nodemailer');
+const emailBusiness = require('../business/emailBusiness');
 
-dotenv.config();
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  port: 25,
-  secure: true,
-  auth: {
-    user: 'ifspestoqueando@gmail.com',
-    pass: '********',
-  },
-  tls: { rejectUnauthorized: false },
-});
 
 class PersonDao {
   constructor(connection) {
@@ -44,27 +31,13 @@ class PersonDao {
         logger.error(err);
         reject(err);
       }
-
-      /* const HelperOptions = {
-        form: '"Estoqueando" <ifspestoqueando@gmail.com>',
-        to: personData.email,
-        subject: 'Confirmação de cadastro Estoqueando',
-        html: '<b>Olá,</b><br>Este é o e-mail de confirmação para o seu cadastro na aplicação Estoqueando. Seja muito bem vindo(a)!<br>Por favor, acesse o link https://projetoestoqueando.blogspot.com/ para finalizar o seu cadastro. <br><br><font color="#FFD700"> Atenciosamente,<br><img src="https://ibb.co/jVPHaU">',
-        // html: readFile(emailconfirmacao)
-      };
-      transporter.sendMail(HelperOptions, (error, info) => {
-        if (error) {
-          return console.log(error);
-        }
-        console.log(`The message was sent: ${info.response}`);
-        console.log(info);
-      }); */
+      new emailBusiness(this.connection)
+        .sendEmail(personData.email)
       resolve(people);
     }));
   }
 
 
-  // vvvv **** VER COMO TRATAR NA MESMA FUNÇÃO ****** vvv
   findEmail(email) {
     logger.error(email);
     return new Promise((resolve, reject) => this.connection.query('SELECT * FROM PERSON WHERE email = $1', [email], (err, result) => {
@@ -110,16 +83,15 @@ class PersonDao {
       }
     }));
   }
-  // ^^^^^ **** VER COMO TRATAR NA MESMA FUNÇÃO ****** ^^^^^
 
-  updatePerson(id, personData) {
-    const hash = bcrypt.hashSync(personData.password, 10);
-    return new Promise((resolve, reject) => this.connection.query('UPDATE PERSON SET name = $1, cpf = $2, email = $3, password = $4, flag_consultant = $5, flag_premium = $6, genre = $7, cep = $8, uf = $9, phone = $10, avarege_evaluation = $11, photo = $12 WHERE id_person = $13', [personData.name, personData.cpf, personData.email, hash, personData.flag_consultant, personData.flag_premium, personData.genre, personData.cep, personData.uf, personData.phone, personData.avarege_evaluation, personData.photo, id], (err, people) => {
+  updatePerson(idPerson, personData) {
+    return new Promise((resolve, reject) => this.connection.query('UPDATE PERSON SET name = $1, flag_consultant = $2, flag_premium = $3, genre = $4, cep = $5, uf = $6, phone = $7 WHERE id_person = $8', [personData.name, Number(personData.flagConsultant), Number(personData.flagPremium), personData.genre, personData.cep, personData.uf, personData.phone, idPerson], (err, people) => {
       if (err) {
         logger.error(err);
         reject(err);
+      } else {
+        resolve(people);
       }
-      resolve(people);
     }));
   }
 

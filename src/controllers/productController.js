@@ -1,7 +1,7 @@
 const ProductDao = require('../models/productDao');
 const ProductBusiness = require('../business/productBusiness');
 
-exports.get = (req, res, next) => {
+exports.get = (req, res) => {
   new ProductDao(req.connection)
     .list()
     .then(products => res.status(200).json(products.rows))
@@ -10,20 +10,19 @@ exports.get = (req, res, next) => {
 
 exports.put = (req, res) => {
   new ProductDao(req.connection)
-  .updateProduct(req.params.id, req.body.productData)
-  .then(response => res.status(200).json(response))
-  .catch(response => res.status(500).json(response));
+    .updateProduct(req.params.id, req.body.productData)
+    .then(response => res.status(200).json(response))
+    .catch(response => res.status(500).json(response));
 };
 
 exports.delete = (req, res) => {
   new ProductDao(req.connection)
-  .deleteProduct(req.params.id)
-  .then(response => res.status(200).json(response))
-  .catch(response => res.status(500).json(response));
+    .deleteProduct(req.params.id)
+    .then(response => res.status(200).json(response))
+    .catch(response => res.status(500).json(response));
 };
 
 exports.post = (req, res) => {
-
   const response = {};
   try {
     new ProductBusiness(req.connection)
@@ -50,5 +49,3 @@ exports.disableProduct = (req, res) => {
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
 };
-
-

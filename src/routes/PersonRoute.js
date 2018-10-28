@@ -51,48 +51,45 @@ router.get('/', personController.get);
   *           type: object
   *           required:
   *             - name
-  *             - cpf
-  *             - email
-  *             - password
-  *             - active
   *             - flag_consultat
   *             - flag_premium
   *             - genre
   *             - cep
   *             - uf
   *             - phone
-  *             - avarege_evaluation
   *             - photo
   *             - authenticate
   *           properties:
   *             name:
   *               type: string
-  *             cpf:
-  *               type: string
-  *             email:
-  *               type: string
-  *             password:
-  *               type: password
-  *             active:
-  *               type: int
   *             flag_consultant:
-  *               type: int
+  *               type: boolean
   *             flag_premium:
-  *               type: int
+  *               type: boolean
   *             genre:
   *               type: string
   *             cep:
   *               type: string
   *             uf:
-  *               type: string  
-  *             phone: 
   *               type: string
-  *             avarege_evaluation:  
-  *               type: decimal
-  *             photo:    
+  *             phone:
+  *               type: string
+  *             photo:
   *               type: oid
   *             authenticate:
   *               type: string
+  *             example: {
+  * "personData" : {
+	*                 "name": "Samara Rocha Lipolis",
+	*                 "flagConsultant" : "true",
+	*                 "flagPremium" : "false",
+	*                 "genre": "F",
+	*                 "cep":"02043061",
+	*                 "uf": "SP",
+	*                 "phone": "11983307692",
+	*                 "photo":""
+	*             }
+  *           }
   *     responses:
   *       200:
   *         description: Usuário atualizado com sucesso
@@ -126,11 +123,8 @@ router.put('/:id', personController.put);
 */
 router.put('/disable/:id', personController.disablePerson);
 
-router.delete('/:id', personController.delete);
-
-// **** VER COMO TRATAR NA MESMA ROTA ******
-
 router.get('/findEmail/:email', personController.findEmailController);
+
 router.get('/findCPF/:cpf', personController.findCPFController);
 
 

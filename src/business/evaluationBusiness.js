@@ -1,4 +1,4 @@
-const Joi = require('Joi');
+const Joi = require('joi');
 const logger = require('winston');
 const EvaluationDao = require('../models/evaluationDao');
 
@@ -31,7 +31,7 @@ class evaluationBusiness {
             throw err;
           } else {
             new EvaluationDao(this.connection)
-              .insertEvaluation(evaluationData)
+              .insertEvaluation(evaluationData);
           }
         },
       );

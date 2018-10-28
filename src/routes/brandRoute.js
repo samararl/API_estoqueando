@@ -158,7 +158,4 @@ router.put('/:id', brandController.put);
   *         description: Marca desativada com sucesso
 */
 
-
-router.delete('/:id', brandController.delete);
-
 module.exports = router;

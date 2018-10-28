@@ -1,5 +1,5 @@
 const express = require('express');
-const purchaseorderController = require('../controllers/purchaseorderController');
+const purchaseOrderController = require('../controllers/purchaseOrderController');
 
 const router = express.Router();
 
@@ -41,10 +41,10 @@ const router = express.Router();
   *             status:
   *               type: string
   *             authenticate:
-  *               type: string            
+  *               type: string
   *
   *           example: {
-  *             "purchaseorderData": {
+  *             "purchaseOrderData": {
   *               "id_consultant": "1",
   *               "id_client": "3",
   *               "order_date": "10/09/2018",
@@ -73,7 +73,7 @@ const router = express.Router();
   *         description: Pedido não pôde ser criado
   */
 
-router.post('/add', purchaseorderController.post);
+router.post('/add', purchaseOrderController.post);
 
 
 /**
@@ -101,7 +101,7 @@ router.post('/add', purchaseorderController.post);
   *         description: Pedidos listados com sucesso
 */
 
-router.get('/', purchaseorderController.get);
+router.get('/', purchaseOrderController.get);
 
 /**
   * @swagger
@@ -140,15 +140,15 @@ router.get('/', purchaseorderController.get);
   *             status:
   *               type: string
   *             authenticate:
-  *               type: string   
+  *               type: string
   *     responses:
   *       200:
   *         description: Pedido atualizado com sucesso
 */
 
-router.put('/:id', purchaseorderController.put);
+router.put('/:id', purchaseOrderController.put);
 
-  /**
+/**
   * @swagger
   * /purchaseorder/{id}:
   *   put:
@@ -173,8 +173,7 @@ router.put('/:id', purchaseorderController.put);
   *         description: Pedido desativado com sucesso
 */
 
-router.put('/disable/:id', purchaseorderController.disablePurchaseorder);
-
+router.put('/disable/:id', purchaseOrderController.disablePurchaseorder);
 
 
 /**
@@ -205,6 +204,6 @@ router.put('/disable/:id', purchaseorderController.disablePurchaseorder);
   *       200:
   *         description: Pedido excluído com sucesso
   */
-router.delete('/:id', purchaseorderController.delete);
+router.delete('/:id', purchaseOrderController.delete);
 
 module.exports = router;

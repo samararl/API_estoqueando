@@ -11,13 +11,13 @@ const pool = new Pool({
 logger.info('Pool iniciado');
 
 
-pool.on('release', () => console.log('pool => conexão retornada'));
-
+pool.on('release', () => logger.log('pool => conexão retornada'));
 
 process.on('SIGINT', () => pool.end((err) => {
-  if (err) return console.log(err);
+  if (err) return logger.log(err);
   logger.info('Pool fechado');
   process.exit(0);
+  return false;
 }));
 
 module.exports = pool;

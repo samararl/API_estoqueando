@@ -1,5 +1,6 @@
 const express = require('express');
 const catalogueController = require('../controllers/catalogueController');
+
 const router = express.Router();
 
 /**
@@ -22,7 +23,7 @@ const router = express.Router();
   *             - period_ref
   *             - year_ref
   *             - description_ref
-  *             - authenticate 
+  *             - authenticate
   *           properties:
   *             id_brand:
   *               type: int
