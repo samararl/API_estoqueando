@@ -60,6 +60,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
     res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
     res.setHeader('Referrer-Policy', 'same-origin');
+    res.setHeader('Feature-Policy', 'self');
 
     res.end();
   } else {
@@ -70,6 +71,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Authorization', 'Bearer');
     res.setHeader('Referrer-Policy', 'same-origin');
+    res.setHeader('Feature-Policy', 'self');
 
     next();
   }
