@@ -61,6 +61,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('Feature-Policy', 'self');
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
+
 
     res.end();
   } else {
@@ -72,6 +74,8 @@ app.use((req, res, next) => {
     res.setHeader('Authorization', 'Bearer');
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('Feature-Policy', 'self');
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
+
 
     next();
   }
