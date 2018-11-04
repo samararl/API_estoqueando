@@ -43,15 +43,15 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 logger.info('Aplicação iniciada');
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false,
+}));
 app.use(bodyParser.json());
 app.use(connectionMiddleware(pool));
-app.use(multer(
-  {
-    dest: './.tmp/',
-    inMemory: false,
-  },
-));
+app.use(multer({
+  dest: './.tmp/',
+  inMemory: false,
+}));
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -59,6 +59,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
     res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
+    res.setHeader('Referrer-Policy', 'same-origin');
+
     res.end();
   } else {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -67,6 +69,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Authorization', 'Bearer');
+    res.setHeader('Referrer-Policy', 'same-origin');
+
     next();
   }
 });
@@ -85,23 +89,19 @@ app.use((req, res, next) => {
     const bearer = token.split(' ');
     jwt.verify(bearer[1], process.env.SECRET, (err, decoded) => {
       if (err) {
-        res.status(403).send(
-          {
-            success: false,
-            message: 'Falha ao tentar autenticar o token!',
-          },
-        );
+        res.status(403).send({
+          success: false,
+          message: 'Falha ao tentar autenticar o token!',
+        });
       }
       req.decoded = decoded;
       next();
     });
   } else {
-    return res.status(401).send(
-      {
-        success: false,
-        message: 'Não há token.',
-      },
-    );
+    return res.status(401).send({
+      success: false,
+      message: 'Não há token.',
+    });
   }
   return false;
 });
