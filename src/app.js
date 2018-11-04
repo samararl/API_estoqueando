@@ -62,6 +62,7 @@ app.use((req, res, next) => {
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('Feature-Policy', 'self');
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
+    res.setHeader('X-Frame-Options', 'sameorigin');
 
 
     res.end();
@@ -75,6 +76,7 @@ app.use((req, res, next) => {
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('Feature-Policy', 'self');
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
+    res.setHeader('X-Frame-Options', 'sameorigin');
 
 
     next();
