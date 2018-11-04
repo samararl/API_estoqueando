@@ -64,6 +64,7 @@ app.use((req, res, next) => {
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
     res.setHeader('X-Frame-Options', 'sameorigin');
     res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
 
 
     res.end();
@@ -79,6 +80,7 @@ app.use((req, res, next) => {
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
     res.setHeader('X-Frame-Options', 'sameorigin');
     res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
 
 
     next();
