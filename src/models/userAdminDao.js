@@ -1,20 +1,6 @@
 const logger = require('winston');
 const bcrypt = require('bcrypt');
-// const nodemailer = require('nodemailer');
 
-
-/* COLOCAR EM OUTRO LUGAR E SÓ CHAMAR AQUI
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  port: 25,
-  secure: true,
-  auth: {
-    user: "ifspestoqueando@gmail.com",
-    pass: "****"
-  },
-  tls: { rejectUnauthorized: false }
-});
-*/
 class UserAdminDao {
   constructor(connection) {
     this.connection = connection;
@@ -22,7 +8,7 @@ class UserAdminDao {
 
 
   list() {
-    return new Promise((resolve, reject) => this.connection.query('SELECT * FROM USERADMIN', (err, usersadmin) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT id_useradmin AS id, name AS nome, login AS login, password AS senha, permision AS permissão, active AS ativo FROM USERADMIN', (err, usersadmin) => {
       if (err) {
         logger.error(err);
         reject(err);

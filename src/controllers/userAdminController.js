@@ -1,8 +1,9 @@
-const UseradminDao = require('../models/userAdminDao');
-const UseradminBusiness = require('../business/userAdminBusiness');
+const UseradminDao = require('../models/useradminDao');
+const UseradminBusiness = require('../business/useradminBusiness');
 
 
-exports.get = (req, res) => {
+
+exports.get = (req, res, next) => {
   new UseradminDao(req.connection)
     .list()
     .then(usersadmin => res.status(200).json(usersadmin.rows))
@@ -11,7 +12,7 @@ exports.get = (req, res) => {
 
 exports.put = (req, res) => {
   new UseradminDao(req.connection)
-    .updateUseradmin(req.params.id, req.body.userAdminData)
+    .updateUseradmin(req.params.id, req.body.useradminData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
 };
@@ -28,10 +29,11 @@ exports.delete = (req, res) => {
 };
 
 exports.post = (req, res) => {
+
   const response = {};
   try {
     new UseradminBusiness(req.connection)
-      .validateUseradminData(req.body.userAdminData);
+      .validateUseradminData(req.body.useradminData);
     response.success = true;
     response.message = 'Criado com sucesso';
     res.status(200).json(response);
@@ -43,14 +45,14 @@ exports.post = (req, res) => {
 
   /*
   new UseradminDao(req.connection)
-    .insertUseradmin(req.body.userAdminData)
+    .insertUseradmin(req.body.useradminData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
     */
+  
 };
 
-/* Fazer uma rota e função genérica para encontrar se Person.email,
-// Person.CPF, Useradmin.login já existe
+/* Fazer uma rota e função genérica para encontrar se Person.email, Person.CPF, Useradmin.login já existe
 exports.findEmailController = (req, res, next) => {
   new PersonDao(req.connection)
   .findEmail(req.params.email)

@@ -80,18 +80,6 @@ describe('Person tests', () => {
         return false;
       });
   });
-  test('should return ERROR when send an invalid parameter', (done) => {
-    request(app)
-      .get('/person/findEmail/')
-      .set('Authorization', `Bearer ${token.value}`)
-      .expect(500)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body.success).toBe(false);
-        done();
-        return false;
-      });
-  });
   test('should return SUCCESS when CPF dont exists in database', (done) => {
     request(app)
       .get('/person/findCPF/12345678900')
@@ -111,19 +99,6 @@ describe('Person tests', () => {
       .expect(200)
       .end((err) => {
         if (err) return done(err);
-        // expect(res.body.success).toBe(false);
-        done();
-        return false;
-      });
-  });
-  test('should return ERROR 500 when disable a person with worng parameter', (done) => {
-    request(app)
-      .put('/person/disable/abc')
-      .set('Authorization', `Bearer ${token.value}`)
-      .expect(500)
-      .end((err) => {
-        if (err) return done(err);
-        // expect(res.body.success).toBe(false);
         done();
         return false;
       });
@@ -135,45 +110,6 @@ describe('Person tests', () => {
       .expect(200)
       .end((err) => {
         if (err) return done(err);
-        // expect(res.body.success).toBe(false);
-        done();
-        return false;
-      });
-  });
-  test('should return SUCESS 200 when insert person with valid data', (done) => {
-    request(app)
-      .post('/public/createPerson')
-      .send({
-        personData: {
-          email: 'testeabc@gmail.com',
-          password: 'samara',
-          name: 'samara rocha',
-          cpf: '37309768854',
-        },
-      })
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body.success).toBe(true);
-        done();
-        return false;
-      });
-  });
-  test('should return ERROR 500 when insert person with invalid data', (done) => {
-    request(app)
-      .post('/public/createPerson')
-      .send({
-        personData: {
-          email: 'testeabc',
-          password: true,
-          name: 's',
-          cpf: '37309768854',
-        },
-      })
-      .expect(500)
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.body.success).toBe(false);
         done();
         return false;
       });

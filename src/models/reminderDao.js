@@ -6,7 +6,7 @@ class ReminderDao {
   }
 
   list() {
-    return new Promise((resolve, reject) => this.connection.query('SELECT * FROM REMINDER', (err, reminders) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT id_reminder AS id, id_person AS "id do usuário", reminder_text AS texto, date_ref AS "data referência", creation_date AS "data de criação", flag_check AS check FROM REMINDER', (err, reminders) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -19,7 +19,7 @@ class ReminderDao {
     logger.debug(reminderData);
     const creationDate = new Date();
     logger.debug(creationDate);
-    return new Promise((resolve, reject) => this.connection.query('INSERT INTO REMINDER (id_person, reminder_text, date_ref, creation_date, flag_check) VALUES ($1, $2, $3, $4, $5)', [reminderData.id_person, reminderData.reminder_text, reminderData.date_ref, creationDate, reminderData.flag_check], (err, reminders) => {
+    return new Promise((resolve, reject) => this.connection.query('INSERT INTO REMINDER (id_person, reminder_text, date_ref, creation_date) VALUES ($1, $2, $3, $4)', [reminderData.idPerson, reminderData.reminderText, reminderData.dateRef, creationDate], (err, reminders) => {
       if (err) {
         logger.error(err);
         reject(err);

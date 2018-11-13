@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const multer = require('multer');
 
 const path = require('path');
 const pool = require('./config/database.js');
@@ -13,14 +12,16 @@ const index = require('./routes/index');
 const authenticateRoute = require('./routes/authenticateRoute');
 const publicRoutes = require('./routes/publicRoute');
 const personRoute = require('./routes/personRoute');
-const userAdminRoute = require('./routes/userAdminRoute.js');
+const userAdminRoute = require('./routes/userAdminRoute');
 const catalogueRoute = require('./routes/catalogueRoute');
 const productRoute = require('./routes/productRoute');
 const reminderRoute = require('./routes/reminderRoute');
 const evaluationRoute = require('./routes/evaluationRoute');
-const purchaseOrderRoute = require('./routes/purchaseOrderRoute.js');
+const purchaseOrderRoute = require('./routes/purchaseOrderRoute');
 const brandRoute = require('./routes/brandRoute');
 const extractRoute = require('./routes/extractRoute');
+const messageRoute = require('./routes/messageRoute');
+
 
 const connectionMiddleware = require('./middleware/connectionMiddleware');
 
@@ -48,40 +49,38 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(connectionMiddleware(pool));
-app.use(multer({
-  dest: './.tmp/',
-  inMemory: false,
-}));
+
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', false);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept, Referrer-Policy,Feature-Policy,Strict-Transport-Security,X-Frame-Options,X-XSS-Protection,X-Content-Type-Options');
+    res.setHeader('Access-Control-Expose-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
     res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('Feature-Policy', 'self');
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
-    res.setHeader('X-Frame-Options', 'sameorigin');
+    res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-
 
     res.end();
   } else {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept, Referrer-Policy,Feature-Policy,Strict-Transport-Security,X-Frame-Options,X-XSS-Protection,X-Content-Type-Options');
+    res.setHeader('Access-Control-Expose-Headers', 'X-Requested-With, Authorization, X-HTTP-Method-Override, Content-Type, Accept');
     res.setHeader('Access-Control-Max-Age', 86400); // 24 horas
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Authorization', 'Bearer');
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('Feature-Policy', 'self');
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubdomains; preload');
-    res.setHeader('X-Frame-Options', 'sameorigin');
+    res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-
+    // res.setHeader('Access-Control-Expose-Headers', 'X-Custom-header');
 
     next();
   }
@@ -127,6 +126,8 @@ app.use('/product', productRoute);
 app.use('/reminder', reminderRoute);
 app.use('/evaluation', evaluationRoute);
 app.use('/purchaseorder', purchaseOrderRoute);
+app.use('/message', messageRoute);
+
 /* Protected routes */
 
 module.exports = app;

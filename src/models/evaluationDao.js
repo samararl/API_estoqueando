@@ -6,7 +6,7 @@ class EvaluationDao {
   }
 
   list() {
-    return new Promise((resolve, reject) => this.connection.query('SELECT * FROM EVALUATION', (err, evaluations) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT id_evaluation AS id, id_consultant AS "id da consultora", id_purchaseorder AS "id_purchaseorder", evaluation AS avaliação, comments AS comentários, date_ref AS "data referência" FROM EVALUATION', (err, evaluations) => {
       if (err) {
         logger.error(err);
         reject(err);

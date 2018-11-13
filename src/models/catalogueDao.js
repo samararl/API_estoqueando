@@ -6,7 +6,7 @@ class CatalogueDao {
   }
 
   list() {
-    return new Promise((resolve, reject) => this.connection.query('SELECT * FROM CATALOGUE', (err, catalogues) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT id_catalogue AS id, id_brand AS "id da marca", period_ref AS "periodo referência", year_ref AS "ano referência", description_ref AS "descrição referência", photo AS foto, active AS ativo FROM CATALOGUE', (err, catalogues) => {
       if (err) {
         logger.error(err);
         reject(err);

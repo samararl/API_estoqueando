@@ -1,7 +1,17 @@
-
-const ExtractDao = require('../models/extractDao');
+const ExtractBusiness = require('../business/extractBusiness');
 
 exports.post = (req, res) => {
-  new ExtractDao(req.connection)
-    .extractData(req.files.file.path);
+  const response = {};
+  try {
+    new ExtractBusiness(req.connection)
+      .extractData(req.body.extractData);
+    response.success = true;
+    response.message = 'Criado com sucesso';
+    res.status(200).json(response);
+  } catch (error) {
+    response.success = false;
+    logger.error(error);
+    response.message = error;
+    res.status(500).json(response);
+  }
 };

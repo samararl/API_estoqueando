@@ -1,7 +1,7 @@
+﻿
 DROP DATABASE dbEstoqueando;
 CREATE DATABASE dbEstoqueando;
 USE dbEstoqueando;
-
 
 DROP TABLE IF EXISTS BRAND;
 CREATE TABLE BRAND (
@@ -12,7 +12,6 @@ CREATE TABLE BRAND (
 	description VARCHAR (255) NOT NULL
 );
 
-
 DROP TABLE IF EXISTS PERSON;
 CREATE TABLE PERSON (
 	id_person SERIAL PRIMARY KEY,
@@ -20,15 +19,16 @@ CREATE TABLE PERSON (
 	cpf VARCHAR(14) NOT NULL,
 	email VARCHAR(50) NOT NULL,
 	password VARCHAR(100) NOT NULL,
-	active INT NOT NULL,
+	active INT NOT NULL DEFAULT 1,
 	flag_consultant INT,
-	flag_premium INT,
+	flag_premium INT DEFAULT 0,
+	flag_user_admin INT NOT NULL DEFAULT 0,
 	genre VARCHAR(1),
 	cep VARCHAR(9),
 	uf VARCHAR(2), 
 	phone VARCHAR(12),
 	avarege_evaluation DECIMAL, 
-	photo OID,
+	photo varchar(255),
 	UNIQUE(email),
 	UNIQUE (cpf)
 );
@@ -40,7 +40,7 @@ CREATE TABLE CATALOGUE (
 	period_ref INT NOT NULL,
 	year_ref INT,
 	description_ref VARCHAR(255),
-	photo OID,	
+	photo varchar(255),	
 	FOREIGN KEY (id_brand) REFERENCES BRAND (id_brand)
 );  
 
@@ -49,8 +49,10 @@ CREATE TABLE PRODUCT (
 	id_product SERIAL PRIMARY KEY,
 	title VARCHAR (50),
 	description VARCHAR (255),
-	photo OID,
-	cod_ref VARCHAR(45)
+	photo VARCHAR(255),
+	catalogue_product_price DECIMAL,
+	cod_ref VARCHAR(45),
+	active INT DEFAULT 1
 );
 
 
@@ -64,25 +66,24 @@ CREATE TABLE PERSON_PRODUCT (
 	FOREIGN KEY (id_product) REFERENCES PRODUCT (id_product)
 );
 
-DROP TABLE IF EXISTS PURCHASEORDER;
-CREATE TABLE PURCHASEORDER (
-	id_purchaseorder SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS PURCHASE_ORDER;
+CREATE TABLE PURCHASE_ORDER (
+	id_purchase_order SERIAL PRIMARY KEY,
 	id_consultant INT NOT NULL,
-	id_client INT NOT NULL,
 	order_date DATE,
-	total_price DECIMAL,
+	total_price DECIMAL DEFAULT 0,
 	sales_date DATE, 
-	status VARCHAR (20),
-	FOREIGN KEY (id_consultant) REFERENCES PERSON (id_person),
-	FOREIGN KEY (id_client) REFERENCES PERSON (id_person)
+	status CHAR CHECK (status = 'A' or 'F'),
+	obs VARCHAR (100),
+	FOREIGN KEY (id_consultant) REFERENCES PERSON (id_person)
 );
 
-DROP TABLE IF EXISTS PRODUCT_PURCHASEORDER;
-CREATE TABLE PRODUCT_PURCHASEORDER (
-	id_purchaseorder INT NOT NULL,
+DROP TABLE IF EXISTS PRODUCT_PURCHASE_ORDER;
+CREATE TABLE PRODUCT_PURCHASE_ORDER (
+	id_purchase_order INT NOT NULL,
 	id_product INT NOT NULL,
 	qtd_product INT,
-	FOREIGN KEY (id_purchaseorder) REFERENCES PURCHASEORDER (id_purchaseorder),
+	FOREIGN KEY (id_purchase_order) REFERENCES PURCHASE_ORDER (id_purchase_order),
 	FOREIGN KEY (id_product) REFERENCES PRODUCT (id_product)
 );  
 
@@ -91,12 +92,10 @@ DROP TABLE IF EXISTS EVALUATION;
 CREATE TABLE EVALUATION (
 	id_evaluation SERIAL PRIMARY KEY,
 	id_consultant INT NOT NULL,
-	id_purchaseorder INT NOT NULL,
 	evaluation INT,
 	comments VARCHAR(255),
 	date_ref DATE,
-	FOREIGN KEY (id_consultant) REFERENCES PERSON (id_person),
-	FOREIGN KEY (id_purchaseorder) REFERENCES PURCHASEORDER (id_purchaseorder)
+	FOREIGN KEY (id_consultant) REFERENCES PERSON (id_person)
 ); 
 
 
@@ -120,40 +119,20 @@ CREATE TABLE REMINDER(
 	FOREIGN KEY (id_person) REFERENCES PERSON (id_person)
 ); 
 
-DROP TABLE IF EXISTS USERADMIN;
-CREATE TABLE USERADMIN(
-id_useradmin SERIAL PRIMARY KEY,
-name VARCHAR(255) NOT NULL,
-login VARCHAR(50) NOT NULL,
-password VARCHAR(100) NOT NULL,
-permision INT NOT NULL,
-active INT NOT NULL,
-UNIQUE(login)
+DROP TABLE IF EXISTS MESSAGE;
+CREATE TABLE MESSAGE(
+id_message SERIAL PRIMARY KEY, 
+id_conversa INT NOT NULL,
+id_person_from INT NOT NULL,
+id_person_to INT NOT NULL,
+msg_date_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+date_remove TIMESTAMP,
+message VARCHAR(255) NOT NULL,
+FOREIGN KEY (id_person_from) REFERENCES PERSON (id_person),
+FOREIGN KEY (id_person_to) REFERENCES PERSON (id_person)
 );
 
 
-DROP TABLE IF EXISTS STOCK;
-CREATE TABLE STOCK(
-id_stock SERIAL PRIMARY KEY,
-id_consultant INT NOT NULL,
-FOREIGN KEY (id_consultant) REFERENCES PERSON (id_person)
-);
-
-DROP TABLE IF EXISTS STOCK_PRODUCT;
-CREATE TABLE STOCK_PRODUCT(
-id_stock INT NOT NULL,
-id_product INT NOT NULL,
-qtd_product INT NOT NULL,
-FOREIGN KEY (id_stock) REFERENCES STOCK (id_stock),
-FOREIGN KEY (id_product) REFERENCES PRODUCT (id_product)
-);
-
-
-
-
-
-
-
-
-
+-- inserindo usuário de teste
+INSERT INTO PERSON (name, cpf , email, password ) VALUES ('Teste', '06723378008', 'teste@teste.com', '"$2b$10$kS1vRy4zHHMDumpPyCseXum2.ZZ/tpvkro.HXfX1kFUwXkyIkQ/0."')
 

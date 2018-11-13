@@ -1,4 +1,6 @@
 const Joi = require('joi');
+const Extension = require('joi-date-extensions');
+const ExtendedJoi = Joi.extend(Extension);
 const logger = require('winston');
 const EvaluationDao = require('../models/evaluationDao');
 
@@ -8,7 +10,8 @@ const evaluationSchema = {
   id_purchaseorder: Joi.number().integer().required(),
   evaluation: Joi.number().required(),
   comments: Joi.string(),
-  date_ref: Joi.date().required(),
+  date_ref: ExtendedJoi.date().format('DD-MM-YYYY').raw(),
+
 };
 
 class evaluationBusiness {

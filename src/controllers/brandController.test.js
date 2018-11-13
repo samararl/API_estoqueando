@@ -1,34 +1,41 @@
 const request = require('supertest');
+const logger = require('winston');
 const app = require('../../src/app');
+const brandController = require('../controllers/brandController');
 
-const token = {};
-
-beforeAll(() => request(app)
+/*
+beforeAll((done) => {
+  const token;
+  request(app)
+ new PersonDao(req.connection)
+    .authenticatePerson(req.body.accessData)
   .post('/authenticate')
   .send({
     accessData: {
-      email: 'samararochalipolis@gmail.com',
-      password: 'samara',
-    },
+        email: 'pri@gmail.com',
+        password: 'pripri'
+      }
   })
-  .set('Accept', 'application/json')
-  .expect(200)
-  .then((res) => {
-    token.value = res.body.token;
-  }));
+  .end((err, response) => {
+    token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mzg5NTQzNTgsImV4cCI6MTUzODk1Nzk1OH0.MI8CCsBulqj3Gv_X9zEf63bPf4tqpXEcjtRvwF_tdl4,
+    //token = response.body.token;
+    done();
+  });
+});
+*/
 
+// GET BRAND
 describe('GET /', () => {
-  // token not being sent - should respond with a 401
-  test('It should require authorization', () => request(app)
+  test('It should return an error because it requires authorization (401) ', () => request(app)
     .get('/brand/')
     .then((response) => {
       expect(response.statusCode).toBe(401);
     }));
 
-  // send the token - should respond with a 200
-  test('It responds with JSON', () => request(app)
+
+  test('It should return a list of brands and return (200)', () => request(app)
     .get('/brand/')
-    .set('Authorization', `Bearer ${token}`)
+    .set('Authorization', `Bearer ${'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mzg5NjkzMzAsImV4cCI6MTUzODk3MjkzMH0.af2I8JHupPhcFsssLI7gI5z-0qLSKjLvBOi4lR1uXgg'}`)
     .then((response) => {
       expect(response.statusCode).toBe(200);
       expect(response.type).toBe('application/json');
@@ -36,50 +43,35 @@ describe('GET /', () => {
 });
 
 
-/** ***** OUTRA TENTATIVA
-const request = require('supertest');
-const app = require('../../src/app');
-
-const token;
-
-beforeAll((done) => {
-  request(app)
-  .post('/authenticate')
-  .send({
-      accessData: {
-        email: 'pri@gmail.com',
-        password: 'pripri',
-      }
-  })
-  .end((err, response) => {
-    token = response.body.token;
-    done();
-  });
-});
-
-test('It responds with JSON', () => {
-  return request(app)
-  .get('/brand/')
-  .set('Authorization', req.headers['x-access-token'])
-  .then((response) => {
-    expect(response.statusCode).toBe(200);
-    expect(response.statusCode).toBe('application/json');
-  });
-});
-
-/*
-describe('Test brand routes', () => {
-// **** adding brand ****
-  // testing error
-  test('It should return error when create a brand', (done) => {
+// POST BRAND
+describe('POST /', () => {
+  test('It should return error when insert a brand because it requires authorization (401)', (done) => {
     request(app).post('/brand/add')
       .send({
         brandData: {
-          name: 'X',
+          name: 'Tuppweware',
           segment: 'Produtos plásticos',
           periodicity: 'mensal',
-          description: 'Industria especializada em produtos de p
-          lásticos, especialmente recipientes para utilização na conservação..',
+          description: 'Industria especializada em produtos de plásticos, especialmente recipientes para utilização na conservação..',
+        },
+      })
+      .set('Accept', 'application/json')
+      .expect(401)
+      .end((err) => {
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  test('It should return error when insert a brand because it will not validate the data (500) ', (done) => {
+    request(app).post('/brand/add')
+      .set('Authorization', `Bearer ${'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mzg5NjkzMzAsImV4cCI6MTUzODk3MjkzMH0.af2I8JHupPhcFsssLI7gI5z-0qLSKjLvBOi4lR1uXgg'}`)
+      .send({
+        brandData: {
+          name: 'T',
+          segment: 'Produtos plásticos',
+          periodicity: 'mensal',
+          description: 'Industria especializada em produtos de plásticos, especialmente recipientes para utilização na conservação..',
         },
       })
       .set('Accept', 'application/json')
@@ -90,16 +82,16 @@ describe('Test brand routes', () => {
       });
   });
 
-  // testing success
-  test('It should create a brand with success', (done) => {
+
+  test('It should return insert a brand with success', (done) => {
     request(app).post('/brand/add')
+      .set('Authorization', `Bearer ${'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mzg5NjkzMzAsImV4cCI6MTUzODk3MjkzMH0.af2I8JHupPhcFsssLI7gI5z-0qLSKjLvBOi4lR1uXgg'}`)
       .send({
         brandData: {
-          name: 'Avon',
+          name: 'Tupperware',
           segment: 'Produtos plásticos',
-          periodicity: 'mensal',
-          description: 'Industria especializada em produtos de
-          plásticos, especialmente recipientes para utilização na conservação..',
+          periodicity: 'Mensal',
+          description: 'Industria especializada em produtos de plásticos, especialmente recipientes para utilização na conservação..',
         },
       })
       .set('Accept', 'application/json')
@@ -109,26 +101,4 @@ describe('Test brand routes', () => {
         done();
       });
   });
-
-  // **** getting brands ****
-  // testing error
-  test('It should return 401 when get brand list without token', (done) => {
-    request(app).get('/brand').then((response) => {
-      expect(response.statusCode).toBe(401);
-      done();
-    });
-  });
-
-  // testing success (how to pass the token in the test?)
-  test('It should return 200 when get brand list with token', (done) => {
-    request(app).get('/brand').then((response) => {
-      expect(response.statusCode).toBe(200);
-      done();
-    });
-  });
-
-  // **** uptading brands ****
-  // **** disabling brands ****
 });
-
-*/

@@ -1,7 +1,7 @@
 const logger = require('winston');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const emailBusiness = require('../business/emailBusiness');
+const SendEmail = require('../models/sendEmail');
 
 
 class PersonDao {
@@ -11,7 +11,7 @@ class PersonDao {
 
 
   list() {
-    return new Promise((resolve, reject) => this.connection.query('SELECT * FROM PERSON', (err, people) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT id_person AS id, name AS nome, cpf AS CPF, email AS email, password AS senha, flag_consultant AS flag_consultora, genre AS sexo, cep AS CEP, uf AS UF, phone AS telefone, avarege_evaluation AS avaliação, photo AS foto FROM PERSON', (err, people) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -21,18 +21,15 @@ class PersonDao {
   }
 
   insertPerson(personData) {
-    logger.debug(personData);
-    const active = 1;
-
     const hash = bcrypt.hashSync(personData.password, 10);
     logger.debug(hash);
-    return new Promise((resolve, reject) => this.connection.query('INSERT INTO PERSON (name, cpf, email, password, active) VALUES ($1, $2, $3, $4, $5 )', [personData.name, personData.cpf, personData.email, hash, active], (err, people) => {
+    return new Promise((resolve, reject) => this.connection.query('INSERT INTO PERSON (name, cpf, email, password, active) VALUES ($1, $2, $3, $4, $5 )', [personData.name, personData.cpf, personData.email, hash, 1], (err, people) => {
       if (err) {
         logger.error(err);
         reject(err);
       }
-      new emailBusiness(this.connection)
-        .sendEmail(personData.email)
+      new SendEmail(personData.email, 'Confirmação de Cadastro - Estoqueando')
+        .sendEmail();
       resolve(people);
     }));
   }
@@ -47,7 +44,7 @@ class PersonDao {
       }
       logger.error(result);
 
-      const response = { };
+      const response = {};
       if (result.rows.length > 0) {
         response.message = 'E-mail já cadastrado.';
         response.success = true;
@@ -71,7 +68,7 @@ class PersonDao {
       }
       logger.error(result);
 
-      const response = { };
+      const response = {};
       if (result.rows.length > 0) {
         response.message = 'CPF já cadastrado.';
         response.success = true;
@@ -85,12 +82,23 @@ class PersonDao {
   }
 
   updatePerson(idPerson, personData) {
-    return new Promise((resolve, reject) => this.connection.query('UPDATE PERSON SET name = $1, flag_consultant = $2, flag_premium = $3, genre = $4, cep = $5, uf = $6, phone = $7 WHERE id_person = $8', [personData.name, Number(personData.flagConsultant), Number(personData.flagPremium), personData.genre, personData.cep, personData.uf, personData.phone, idPerson], (err, people) => {
+    return new Promise((resolve, reject) => this.connection.query('UPDATE PERSON SET name = $1, flag_premium = $2, genre = $3, cep = $4, uf = $5, phone = $6 WHERE id_person = $7', [personData.name, Number(personData.flagPremium), personData.genre, personData.cep, personData.uf, personData.phone, idPerson], (err, people) => {
       if (err) {
         logger.error(err);
         reject(err);
       } else {
         resolve(people);
+      }
+    }));
+  }
+
+  findPersonById(idPerson) {
+    return new Promise((resolve, reject) => this.connection.query('SELECT name, flag_consultant as "consultant",flag_premium as "flagPremium",cpf, email, cep, uf, phone FROM PERSON WHERE id_person = $1 ', [idPerson], (err, person) => {
+      if (err) {
+        logger.error(err);
+        reject(err);
+      } else {
+        resolve(person.rows[0]);
       }
     }));
   }
@@ -121,11 +129,14 @@ class PersonDao {
           const response = {
             success: true,
             message: 'Token criado',
-            token: jwt.sign(
-              { data: accessData.name },
-              process.env.SECRET,
-              { expiresIn: 60 * 60 },
-            ),
+            name: user.rows[0].name,
+            id: user.rows[0].id_person,
+            token: jwt.sign({
+              data: accessData.name,
+            },
+            process.env.SECRET, {
+              expiresIn: 60 * 60,
+            }),
 
           };
           resolve(response);

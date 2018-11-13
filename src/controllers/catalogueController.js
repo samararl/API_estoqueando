@@ -1,7 +1,8 @@
 const CatalogueDao = require('../models/catalogueDao');
 const CatalogueBusiness = require('../business/catalogueBusiness');
+const logger = require('winston');
 
-exports.get = (req, res) => {
+exports.get = (req, res, next) => {
   new CatalogueDao(req.connection)
     .list()
     .then(people => res.status(200).json(people.rows))
@@ -10,12 +11,13 @@ exports.get = (req, res) => {
 
 exports.put = (req, res) => {
   new CatalogueDao(req.connection)
-    .updateCatalogue(req.params.id, req.body.catalogueData)
-    .then(response => res.status(200).json(response))
-    .catch(response => res.status(500).json(response));
+  .updateCatalogue(req.params.id, req.body.catalogueData)
+  .then(response => res.status(200).json(response))
+  .catch(response => res.status(500).json(response));
 };
 
 exports.post = (req, res) => {
+
   const response = {};
   try {
     new CatalogueBusiness(req.connection)
@@ -35,18 +37,20 @@ exports.post = (req, res) => {
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
     */
+  
 };
 
 exports.delete = (req, res) => {
-  new CatalogueDao(req.connection)
+    new CatalogueDao(req.connection)
     .deleteCatalogue(req.params.id)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
-};
+  };
 
-exports.disableCatalogue = (req, res) => {
-  new CatalogueDao(req.connection)
-    .disableCatalogue(req.params.id)
-    .then(response => res.status(200).json(response))
-    .catch(response => res.status(500).json(response));
-};
+  exports.disableCatalogue = (req, res) => {
+    new CatalogueDao(req.connection)
+      .disableCatalogue(req.params.id)
+      .then(response => res.status(200).json(response))
+      .catch(response => res.status(500).json(response));
+  };
+  

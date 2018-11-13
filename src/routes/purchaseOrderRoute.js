@@ -101,7 +101,7 @@ router.post('/add', purchaseOrderController.post);
   *         description: Pedidos listados com sucesso
 */
 
-router.get('/', purchaseOrderController.get);
+router.get('/', purchaseOrderController.insertProductPurchaseOrder);
 
 /**
   * @swagger
@@ -120,7 +120,6 @@ router.get('/', purchaseOrderController.get);
   *           type: object
   *           required:
   *             - id_consultant
-  *             - id_client
   *             - order_date
   *             - total_price
   *             - sales_date
@@ -205,5 +204,7 @@ router.put('/disable/:id', purchaseOrderController.disablePurchaseorder);
   *         description: Pedido excluído com sucesso
   */
 router.delete('/:id', purchaseOrderController.delete);
+router.post('/addPO', purchaseOrderController.insertProductPurchaseOrder);
+
 
 module.exports = router;
