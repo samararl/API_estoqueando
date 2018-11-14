@@ -132,11 +132,11 @@ class PersonDao {
             name: user.rows[0].name,
             id: user.rows[0].id_person,
             token: jwt.sign({
-              data: accessData.name,
-            },
-            process.env.SECRET, {
-              expiresIn: 60 * 60,
-            }),
+                data: accessData.name,
+              },
+              'segredo', {
+                expiresIn: 60 * 60,
+              }),
 
           };
           resolve(response);
