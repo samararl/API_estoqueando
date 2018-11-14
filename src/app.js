@@ -98,7 +98,7 @@ app.use((req, res, next) => {
   const token = req.body.token || req.query.token || req.headers.authorization;
   if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
     const bearer = token.split(' ');
-    jwt.verify(bearer[1], process.env.SECRET, (err, decoded) => {
+    jwt.verify(bearer[1], 'segredo', (err, decoded) => {
       if (err) {
         res.status(403).send({
           success: false,
