@@ -14,15 +14,15 @@ class ExtractDao {
   }
 
   /**
- * Following steps done under this functions.
- *
- * 1. Uploads image under '.tmp' folder.
- * 2. Grab text from image using 'tesseract-ocr'.
- * 3. Delete image from hardisk.
- * 4. Return text in json format.
- *
- * @param path
- */
+   * Following steps done under this functions.
+   *
+   * 1. Uploads image under '.tmp' folder.
+   * 2. Grab text from image using 'tesseract-ocr'.
+   * 3. Delete image from hardisk.
+   * 4. Return text in json format.
+   *
+   * @param path
+   */
   teste(path) {
     // Recognize text of any language in any format
     this.teste = 'teste';

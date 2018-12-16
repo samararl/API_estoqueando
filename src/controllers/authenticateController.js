@@ -1,4 +1,3 @@
-
 const PersonDao = require('../models/personDao');
 
 exports.post = (req, res) => {

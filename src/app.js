@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const dotenv = require('dotenv');
 
 const path = require('path');
 const pool = require('./config/database.js');
@@ -21,10 +22,13 @@ const purchaseOrderRoute = require('./routes/purchaseOrderRoute');
 const brandRoute = require('./routes/brandRoute');
 const extractRoute = require('./routes/extractRoute');
 const messageRoute = require('./routes/messageRoute');
+const segmentRoute = require('./routes/segmentRoute');
+const movimentRoute = require('./routes/movimentRoute');
 
 
 const connectionMiddleware = require('./middleware/connectionMiddleware');
 
+dotenv.config();
 const app = express();
 const swaggerDefinition = {
   info: {
@@ -90,7 +94,6 @@ app.use((req, res, next) => {
 app.use('/', index);
 app.use('/authenticate', authenticateRoute);
 app.use('/public', publicRoutes);
-app.use('/extract', extractRoute);
 
 /* Public routes */
 
@@ -98,7 +101,7 @@ app.use((req, res, next) => {
   const token = req.body.token || req.query.token || req.headers.authorization;
   if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
     const bearer = token.split(' ');
-    jwt.verify(bearer[1], 'segredo', (err, decoded) => {
+    jwt.verify(bearer[1], process.env.SECRET, (err, decoded) => {
       if (err) {
         res.status(403).send({
           success: false,
@@ -122,11 +125,14 @@ app.use('/brand', brandRoute);
 app.use('/person', personRoute);
 app.use('/useradmin', userAdminRoute);
 app.use('/catalogue', catalogueRoute);
+app.use('/extract', extractRoute);
 app.use('/product', productRoute);
 app.use('/reminder', reminderRoute);
 app.use('/evaluation', evaluationRoute);
 app.use('/purchaseorder', purchaseOrderRoute);
 app.use('/message', messageRoute);
+app.use('/segment', segmentRoute);
+app.use('/moviment', movimentRoute);
 
 /* Protected routes */
 

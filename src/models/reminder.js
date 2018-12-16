@@ -1,8 +1,8 @@
 class Reminder {
-    constructor(idPerson, reminderText, dateRef) {
-        this.idPerson = idPerson;
-        this.reminderText = reminderText;
-        this.dateRef = dateRef;
-    }
+  constructor(idPurchaseOrder, reminderText, dateRef) {
+    this.idPurchaseOrder = idPurchaseOrder;
+    this.reminderText = reminderText;
+    this.dateRef = dateRef;
+  }
 }
 module.exports = Reminder;

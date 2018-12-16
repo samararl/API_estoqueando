@@ -7,8 +7,8 @@ beforeAll(() => request(app)
   .post('/authenticate')
   .send({
     accessData: {
-      email: 'samararochalipolis@gmail.com',
-      password: 'samara',
+      email: 'ju@gmail.com',
+      password: 'jujuju',
     },
   })
   .set('Accept', 'application/json')
@@ -20,14 +20,48 @@ beforeAll(() => request(app)
 // GET EVALUATIONS
 describe('GET /', () => {
   test('It should return an error because it requires authorization (401) ', () => request(app)
-    .get('/product/')
+    .get('/product/user/2')
     .then((response) => {
       expect(response.statusCode).toBe(401);
     }));
 
+  // GET BY ID USER
+  test('It should return a list of produts by id of an user and return (200)', () => request(app)
+    .get('/product/user/2')
+    .set('Authorization', `Bearer ${token.value}`)
+    .then((response) => {
+      expect(response.statusCode).toBe(200);
+      expect(response.type).toBe('application/json');
+    }));
 
-  test('It should return a list of produts and return (200)', () => request(app)
-    .get('/product/')
+  test('It should return a list of produts by id with error and return (500)', () => request(app)
+    .get('/product/user/A')
+    .set('Authorization', `Bearer ${token.value}`)
+    .then((response) => {
+      expect(response.statusCode).toBe(200);
+      expect(response.type).toBe('application/json');
+    }));
+
+  // GET BY ID CATALOGUE
+  test('It should return a list of produts by catalogue and return (200)', () => request(app)
+    .get('/product/catalogue/1')
+    .set('Authorization', `Bearer ${token.value}`)
+    .then((response) => {
+      expect(response.statusCode).toBe(200);
+      expect(response.type).toBe('application/json');
+    }));
+
+  test('It should return a list of produts by catalogue and return (500)', () => request(app)
+    .get('/product/catalogue/A')
+    .set('Authorization', `Bearer ${token.value}`)
+    .then((response) => {
+      expect(response.statusCode).toBe(200);
+      expect(response.type).toBe('application/json');
+    }));
+
+  // GET THE STOCK
+  test('It should return a list of produts of the stock and return (200)', () => request(app)
+    .get('/product/stock')
     .set('Authorization', `Bearer ${token.value}`)
     .then((response) => {
       expect(response.statusCode).toBe(200);
@@ -36,15 +70,16 @@ describe('GET /', () => {
 });
 
 
-// POST EVALUATION
+// POST PRODUCT
 describe('POST /', () => {
   test('It should return error when insert a product because it requires authorization (401)', (done) => {
     request(app).post('/product/add')
       .send({
         productData: {
-          title: 'Batom',
-          description: 'Batom mate',
-          cod_ref: '80754',
+          title: 'someTitle',
+          description: 'someDescription',
+          image: null,
+          cod: 'someCodRef',
         },
       })
       .set('Accept', 'application/json')
@@ -61,9 +96,10 @@ test('It should return error when insert a product because it will not validate 
     .set('Authorization', `Bearer ${token.value}`)
     .send({
       productData: {
-        title: 'B',
-        description: 'Batom mate',
-        cod_ref: '80754',
+        title: null,
+        description: 'someDescription',
+        image: null,
+        cod: 'someCodRef',
       },
     })
     .set('Accept', 'application/json')
@@ -79,9 +115,10 @@ test('It should return insert a product with success', (done) => {
     .set('Authorization', `Bearer ${token.value}`)
     .send({
       productData: {
-        title: 'Delineador',
-        description: 'Delineador caneta',
-        cod_ref: '80754',
+        title: 'someTitle',
+        description: 'someDescription',
+        image: null,
+        cod: 'someCodRef',
       },
     })
     .set('Accept', 'application/json')

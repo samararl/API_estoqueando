@@ -1,5 +1,7 @@
 const request = require('supertest');
+const logger = require('winston');
 const app = require('../../src/app');
+const extractController = require('../controllers/extractController');
 
 const token = {};
 
@@ -7,8 +9,8 @@ beforeAll(() => request(app)
   .post('/authenticate')
   .send({
     accessData: {
-      email: 'ju@gmail.com',
-      password: 'jujuju',
+      email: 'samararochalipolis@gmail.com',
+      password: 'samara',
     },
   })
   .set('Accept', 'application/json')
@@ -17,26 +19,9 @@ beforeAll(() => request(app)
     token.value = res.body.token;
   }));
 
-describe('GET /', () => {
-  test('It should return an error because it requires authorization (401) ', () => request(app)
-    .get('/message/')
-    .then((response) => {
-      expect(response.statusCode).toBe(401);
-    }));
-
-  test('It should return a list of brands and return (200)', () => request(app)
-    .get('/brand/')
-    .set('Authorization', `Bearer ${token.value}`)
-    .then((response) => {
-      expect(response.statusCode).toBe(200);
-      expect(response.type).toBe('application/json');
-    }));
-});
-
-
-// POST BRAND
+// POST EXTRACTION --------- VER POSTMAN EXTRACT
 describe('POST /', () => {
-  test('It should return error when insert a brand because it requires authorization (401)', (done) => {
+  test('It should return error when insert an extraction because it requires authorization (401)', (done) => {
     request(app).post('/brand/add')
       .send({
         brandData: {
@@ -60,6 +45,9 @@ describe('POST /', () => {
       .send({
         brandData: {
           name: 'T',
+          segment: 'Produtos plásticos',
+          periodicity: 'mensal',
+          description: 'Industria especializada em produtos de plásticos, especialmente recipientes para utilização na conservação..',
         },
       })
       .set('Accept', 'application/json')
@@ -77,44 +65,13 @@ describe('POST /', () => {
       .send({
         brandData: {
           name: 'Tupperware',
+          segment: 'Produtos plásticos',
+          periodicity: 'Mensal',
+          description: 'Industria especializada em produtos de plásticos, especialmente recipientes para utilização na conservação..',
         },
       })
       .set('Accept', 'application/json')
       .expect(200)
-      .end((err) => {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-
-  // PUT BRAND
-  test('It should update a brand with success', (done) => {
-    request(app).put('/brand/1')
-      .set('Authorization', `Bearer ${token.value}`)
-      .send({
-        brandData: {
-          name: 'Tupperware 2',
-        },
-      })
-      .set('Accept', 'application/json')
-      .expect(200)
-      .end((err) => {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  test('It should update a brand with error', (done) => {
-    request(app).put('/brand/1')
-      .set('Authorization', `Bearer ${token.value}`)
-      .send({
-        brandData: {
-          nameee: 'Tupperware 2',
-        },
-      })
-      .set('Accept', 'application/json')
-      .expect(500)
       .end((err) => {
         if (err) return done(err);
         done();

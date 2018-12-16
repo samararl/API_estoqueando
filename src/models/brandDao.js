@@ -5,8 +5,11 @@ class BrandDao {
     this.connection = connection;
   }
 
+  /**
+   * Lista as marcas cadastradas
+   */
   list() {
-    return new Promise((resolve, reject) => this.connection.query('SELECT id_brand AS id, name AS nome, segment AS segmento, periodicity AS periodicidade, description AS descrição, active AS ativo FROM BRAND', (err, brands) => {
+    return new Promise((resolve, reject) => this.connection.query('SELECT id_brand AS "id", name AS "nome" FROM BRAND', (err, brands) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -17,7 +20,7 @@ class BrandDao {
 
   insertBrand(brandData) {
     logger.debug(brandData);
-    return new Promise((resolve, reject) => this.connection.query('INSERT INTO BRAND (name, segment, periodicity, description, active) VALUES ($1, $2, $3, $4, $5)', [brandData.name, brandData.segment, brandData.periodicity, brandData.description, 1], (err, brands) => {
+    return new Promise((resolve, reject) => this.connection.query('INSERT INTO BRAND (name) VALUES ($1)', [brandData.name], (err, brands) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -28,7 +31,7 @@ class BrandDao {
   }
 
   updateBrand(id, brandData) {
-    return new Promise((resolve, reject) => this.connection.query('UPDATE BRAND SET name = $1, segment = $2, periodicity = $3, description = $4 WHERE id_brand = $5', [brandData.name, brandData.segment, brandData.periodicity, brandData.description, id], (err, brands) => {
+    return new Promise((resolve, reject) => this.connection.query('UPDATE BRAND SET name = $1 WHERE id_brand = $2', [brandData.name, id], (err, brands) => {
       if (err) {
         logger.error(err);
         reject(err);

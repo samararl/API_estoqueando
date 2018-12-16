@@ -7,8 +7,8 @@ beforeAll(() => request(app)
   .post('/authenticate')
   .send({
     accessData: {
-      email: 'samararochalipolis@gmail.com',
-      password: 'samara',
+      email: 'ju@gmail.com',
+      password: 'jujuju',
     },
   })
   .set('Accept', 'application/json')
@@ -25,7 +25,7 @@ describe('GET /', () => {
     }));
 
 
-  test('It should return a list of evaluation and return (200)', () => request(app)
+  test('It should return a list of evaluations and return (200)', () => request(app)
     .get('/evaluation/')
     .set('Authorization', `Bearer ${token.value}`)
     .then((response) => {
@@ -40,11 +40,11 @@ describe('POST /', () => {
     request(app).post('/evaluation/add')
       .send({
         evaluationData: {
-          id_person: 1,
-          id_purchaseorder: 1,
+          idConsultant: 1,
+          idClient: 2,
           evaluation: 10,
-          comments: 'Atendimento muito bom',
-          date_ref: '15/09/2018',
+          comment: 'Atendimento muito bom',
+          dtEvaluation: '15-09-2018',
         },
       })
       .set('Accept', 'application/json')
@@ -61,11 +61,11 @@ test('It should return error when insert a evaluation because it will not valida
     .set('Authorization', `Bearer ${token.value}`)
     .send({
       evaluationData: {
-        id_person: 'cod',
-        id_purchaseorder: 1,
+        idConsultant: 'cod',
+        idClient: 2,
         evaluation: 10,
-        comments: 'Atendimento muito bom',
-        date_ref: '15/09/2018',
+        comment: 'Atendimento muito bom',
+        dtEvaluation: '15-09-2018',
       },
     })
     .set('Accept', 'application/json')
@@ -81,11 +81,52 @@ test('It should return insert a catalogue with success', (done) => {
     .set('Authorization', `Bearer  ${token.value}`)
     .send({
       evaluationData: {
-        id_person: 1,
-        id_purchaseorder: 1,
+        idConsultant: 1,
+        idClient: 2,
         evaluation: 10,
-        comments: 'Atendimento muito bom',
-        date_ref: '2018-01-01:00:00:00.000Z',
+        comment: 'Atendimento muito bom',
+        dtEvaluation: '15-09-2018',
+      },
+    })
+    .set('Accept', 'application/json')
+    .expect(200)
+    .end((err) => {
+      if (err) return done(err);
+      done();
+    });
+});
+
+test('It should update an evaluation with success', (done) => {
+  request(app).put('/evaluation/2')
+    .set('Authorization', `Bearer ${token.value}`)
+    .send({
+      evaluationData: {
+        idConsultant: 1,
+        idClient: 2,
+        evaluation: 7,
+        comment: 'Mais ou menos',
+        dtEvaluation: '15-09-2018',
+      },
+    })
+    .set('Accept', 'application/json')
+    .expect(200)
+    .end((err) => {
+      if (err) return done(err);
+      done();
+    });
+});
+
+
+test('It should update an evaluation with error', (done) => {
+  request(app).put('/evaluation/2')
+    .set('Authorization', `Bearer ${token.value}`)
+    .send({
+      evaluationData: {
+        idConsultantttt: 1,
+        idClient: 2,
+        evaluation: 7,
+        comment: 'Mais ou menos',
+        dtEvaluation: '15-09-2018',
       },
     })
     .set('Accept', 'application/json')

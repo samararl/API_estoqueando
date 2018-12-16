@@ -3,6 +3,5 @@ const extractController = require('../controllers/extractController');
 
 const router = express.Router();
 
-router.post('/', extractController.post);
-
+router.post('/', extractController.extractData);
 module.exports = router;

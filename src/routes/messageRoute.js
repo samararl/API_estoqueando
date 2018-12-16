@@ -55,4 +55,9 @@ const router = express.Router();
  */
 
 router.post('/add', messageController.post);
+
+router.get('/user/:id', messageController.listMessageByPerson);
+router.get('/chat/:to/:from', messageController.getChat);
+
+
 module.exports = router;

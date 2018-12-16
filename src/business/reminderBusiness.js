@@ -7,11 +7,9 @@ const ReminderDao = require('../models/reminderDao');
 
 
 const reminderSchema = {
-  id_person: Joi.number().integer(),
-  reminder_text: Joi.string().min(11).required(),
-  date_ref: ExtendedJoi.date().format('DD-MM-YYYY').raw(),
-  flag_check: Joi.number().integer().required(),
-
+  idPurchaseOrder: Joi.number().integer(),
+  reminderText: Joi.string().min(11).required(),
+  dtRef: ExtendedJoi.date().format('DD-MM-YYYY').raw(),
 };
 
 class reminderBusiness {
@@ -22,10 +20,9 @@ class reminderBusiness {
   validateReminderData(reminderData) {
     try {
       Joi.validate({
-        id_person: reminderData.id_person,
-        reminder_text: reminderData.reminder_text,
-        date_ref: reminderData.date_ref,
-        flag_check: reminderData.flag_check,
+        idPurchaseOrder: reminderData.idPurchaseOrder,
+        reminderText: reminderData.reminderText,
+        dtRef: reminderData.dtRef,
       }, reminderSchema, (err) => {
         if (err) {
           logger.debug(err);

@@ -1,6 +1,4 @@
-const logger = require('winston');
 const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
 
 
 const transporter = nodemailer.createTransport({
@@ -11,7 +9,9 @@ const transporter = nodemailer.createTransport({
     user: 'ifspestoqueando@gmail.com',
     pass: '*******',
   },
-  tls: { rejectUnauthorized: false },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 

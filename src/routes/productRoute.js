@@ -22,7 +22,7 @@ const router = express.Router();
  *             - title
  *             - description
  *             - price
- *             - cod_ref
+ *             - codRef
  *             - authenticate
  *           properties:
  *             title:
@@ -31,7 +31,7 @@ const router = express.Router();
  *               type: string
  *             price:
  *               type: decimal
- *             cod_ref:
+ *             codRef:
  *               type: string
  *             authenticate:
  *               type: string
@@ -41,7 +41,7 @@ const router = express.Router();
  *               "title": "someTitle",
  *               "description": "someDescription",
  *               "price": "somePrice",
- *               "cod_ref": "someCodRef",
+ *               "codRef": "someCodRef",
  *               "authenticate": "$someToken01020304"
  *              }
  *           }
@@ -132,33 +132,8 @@ router.post('/add', productController.post);
  */
 
 router.post('/addStock', productController.addStock);
+router.post('/withdrawStock', productController.withdrawStock);
 
-/**
- * @swagger
- * /product:
- *   get:
- *     tags:
- *       - Produto - buscar
- *     description: Busca todos os produtos cadastradas
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         required: true
- *         schema:
- *           type: object
- *           required:
- *             - authenticate
- *           properties:
- *             authenticate:
- *               type: string
- *     responses:
- *       200:
- *         description: Produtos listados com sucesso
- */
-
-router.get('/', productController.get);
 
 /**
  * @swagger
@@ -187,6 +162,10 @@ router.get('/', productController.get);
 
 router.get('/products', productController.listProducts);
 
+router.get('/product/:id', productController.getProductById);
+
+router.get('/stock', productController.listStockProducts);
+
 /**
  * @swagger
  * /product/user/:id:
@@ -213,57 +192,18 @@ router.get('/products', productController.listProducts);
  */
 
 router.get('/user/:id', productController.listProductByIdPerson);
-
 /**
  * @swagger
- * /product/{id}:
- *   put:
+ * /product/catalogue/:id:
+ *   get:
  *     tags:
- *       - Produto - atualizar
- *     description: Atualizar determinado produto cadastrado por id
+ *       - Produto por catálogo
+ *     description: Busca todos os produtos cadastrados em um catálogo
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: body
- *         in: body
- *         required: true
- *         schema:
- *           type: object
- *           required:
- *             - title
- *             - description
- *             - price
- *             - cod_ref
- *             - authenticate
- *           properties:
- *             title:
- *               type: string
- *             description:
- *               type: string
- *             price:
- *               type: decimal
- *             cod_ref:
- *               type: string
- *             authenticate:
- *               type: string
- *     responses:
- *       200:
- *         description: Produto atualizado com sucesso
- */
-router.put('/:id', productController.put);
-
-/**
- * @swagger
- * /product/{id}:
- *   put:
- *     tags:
- *       - Produto - desativar
- *     description: Desativar determinado produto cadastrado por id
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
+ *         in: params
  *         required: true
  *         schema:
  *           type: object
@@ -274,11 +214,8 @@ router.put('/:id', productController.put);
  *               type: string
  *     responses:
  *       200:
- *         description: Produto desativado com sucesso
+ *         description: Produtos  de um catálogo
  */
-
-router.put('/disable/:id', productController.disableProduct);
-
-router.delete('/:id', productController.delete);
+router.get('/catalogue/:id', productController.listProductByCatalogue);
 
 module.exports = router;

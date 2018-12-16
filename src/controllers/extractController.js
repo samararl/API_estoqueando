@@ -1,17 +1,11 @@
-const ExtractBusiness = require('../business/extractBusiness');
+const ExtractDataBusiness = require('../business/extractDataBusiness');
 
-exports.post = (req, res) => {
-  const response = {};
-  try {
-    new ExtractBusiness(req.connection)
-      .extractData(req.body.extractData);
-    response.success = true;
-    response.message = 'Criado com sucesso';
-    res.status(200).json(response);
-  } catch (error) {
-    response.success = false;
-    logger.error(error);
-    response.message = error;
-    res.status(500).json(response);
-  }
+/**
+ * Trata dados do produto
+ */
+exports.extractData = (req) => {
+  const extractCode = /(\d{6}|\d{5})/i;
+  const extractTitle = /(\s(?!\d).*?\D*)/i;
+  new ExtractDataBusiness(extractCode, extractTitle)
+    .extractData(req.body.text);
 };

@@ -1,23 +1,23 @@
-const purchaseOrderDao = require('../models/purchaseOrderDao');
-const purchaseOrderBusiness = require('../business/purchaseOrderBusiness');
+const PurchaseOrderDao = require('../models/purchaseOrderDao');
+const PurchaseOrderBusiness = require('../business/purchaseOrderBusiness');
 
 
-exports.get = (req, res, next) => {
-  new purchaseOrderDao(req.connection)
+exports.get = (req, res) => {
+  new PurchaseOrderDao(req.connection)
     .list()
     .then(purchaseorders => res.status(200).json(purchaseorders.rows))
     .catch(purchaseorders => res.status(500).json(purchaseorders.rows));
 };
 
 exports.put = (req, res) => {
-  new purchaseOrderDao(req.connection)
+  new PurchaseOrderDao(req.connection)
     .updatePurchaseorder(req.params.id, req.body.purchaseOrderData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
 };
 
 exports.delete = (req, res) => {
-  new purchaseOrderDao(req.connection)
+  new PurchaseOrderDao(req.connection)
     .deletePurchaseorder(req.params.id)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
@@ -26,7 +26,7 @@ exports.delete = (req, res) => {
 exports.post = (req, res) => {
   const response = {};
   try {
-    new purchaseOrderBusiness(req.connection)
+    new PurchaseOrderBusiness(req.connection)
       .validatePurchaseOrderData(req.body.purchaseOrderData);
     response.success = true;
     response.message = 'Criado com sucesso';
@@ -39,7 +39,7 @@ exports.post = (req, res) => {
 };
 
 exports.disablePurchaseorder = (req, res) => {
-  new purchaseOrderDao(req.connection)
+  new PurchaseOrderDao(req.connection)
     .disablePurchaseorder(req.params.id)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));
@@ -47,7 +47,7 @@ exports.disablePurchaseorder = (req, res) => {
 
 
 exports.insertProductPurchaseOrder = (req, res) => {
-  new purchaseOrderDao(req.connection)
+  new PurchaseOrderDao(req.connection)
     .insertProductPurchaseOrder(req.body.purchaseOrderData)
     .then(response => res.status(200).json(response))
     .catch(response => res.status(500).json(response));

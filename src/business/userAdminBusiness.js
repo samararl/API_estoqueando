@@ -17,22 +17,20 @@ class userAdminBusiness {
 
   validateUseradminData(userAdminData) {
     try {
-      Joi.validate(
-        {
-          name: userAdminData.name,
-          login: userAdminData.login,
-          password: userAdminData.password,
-          permision: userAdminData.permision,
-        }, userAdminSchema, (err) => {
-          if (err) {
-            logger.debug(err);
-            throw err;
-          } else {
-            new UseradminDao(this.connection)
-              .insertUseradmin(userAdminData);
-          }
-        },
-      );
+      Joi.validate({
+        name: userAdminData.name,
+        login: userAdminData.login,
+        password: userAdminData.password,
+        permision: userAdminData.permision,
+      }, userAdminSchema, (err) => {
+        if (err) {
+          logger.debug(err);
+          throw err;
+        } else {
+          new UseradminDao(this.connection)
+            .insertUseradmin(userAdminData);
+        }
+      });
     } catch (error) {
       logger.error(error);
       throw error;

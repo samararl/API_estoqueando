@@ -1,89 +1,96 @@
-const fetch = require('isomorphic-fetch'),
-    isURL = require('is-url'),
-    fork = require('child_process').fork,
-    fs = require('fs');
+const fetch = require('isomorphic-fetch');
+
+
+const isURL = require('is-url');
+
+
+const fork = require('child_process').fork;
+
+
+const fs = require('fs');
 
 exports.defaultOptions = {
-    workerPath: require('path').join(__dirname, 'worker.js'),
-    langPath: 'http://cdn.rawgit.com/naptha/tessdata/gh-pages/3.02/',
-}
+  workerPath: require('path').join(__dirname, 'worker.js'),
+  langPath: 'http://cdn.rawgit.com/naptha/tessdata/gh-pages/3.02/',
+};
 
-exports.spawnWorker = function spawnWorker(instance, workerOptions){
-    var cp = fork(workerOptions.workerPath);
-    cp.on('message', packet => {
-        instance._recv(packet);
+exports.spawnWorker = function spawnWorker(instance, workerOptions) {
+  const cp = fork(workerOptions.workerPath);
+  cp.on('message', (packet) => {
+    instance._recv(packet);
+  });
+  return cp;
+};
+
+exports.terminateWorker = function (instance) {
+  instance.worker.kill();
+};
+
+exports.sendPacket = function sendPacket(instance, packet) {
+  loadImage(packet.payload.image, (img) => {
+    packet.payload.image = img;
+    instance.worker.send(packet);
+  });
+};
+
+
+function loadImage(image, cb) {
+  if (isURL(image)) {
+    fetch(image)
+      .then(resp => resp.buffer())
+      .then(buffer => loadImage(buffer, cb))
+      .catch(err => console.error(err));
+  }
+
+  if (typeof image === 'string') {
+    fs.readFile(image, (err, buffer) => {
+      if (err) throw err;
+      loadImage(buffer, cb);
     });
-    return cp;
-}
+    return;
+  } if (image instanceof Buffer) {
+    const mime = require('file-type')(image).mime;
 
-exports.terminateWorker = function(instance){
-    instance.worker.kill();
-}
+    if (mime === 'image/png') {
+      const PNGReader = require('png.js');
+      const reader = new PNGReader(image);
+      reader.parse((err, png) => {
+        if (err) throw err;
 
-exports.sendPacket = function sendPacket(instance, packet){
-    loadImage(packet.payload.image, img => {
-        packet.payload.image = img;
-        instance.worker.send(packet);
-    });
-}
+        const image = {
+          width: png.getWidth(),
+          height: png.getHeight(),
+        };
+        image.data = new Uint8Array(image.width * image.height * 4);
+        for (let j = 0; j < image.height; j++) {
+          for (let i = 0; i < image.width; i++) {
+            const offset = 4 * (i + j * image.width);
 
 
-function loadImage(image, cb){
-    
-    if(isURL(image)) {
-        fetch(image)
-            .then(resp => resp.buffer())
-            .then(buffer => loadImage(buffer, cb))
-            .catch(err => console.error(err));
-    }
+            const pix = png.getPixel(i, j);
 
-    if(typeof image === 'string'){
-        fs.readFile(image, function(err, buffer){
-            if (err) throw err;
-            loadImage(buffer, cb);
-        });
-        return;
-    } else if (image instanceof Buffer){
-        var mime = require('file-type')(image).mime
-
-        if(mime === 'image/png'){
-            var PNGReader = require('png.js');
-            var reader = new PNGReader(image);
-            reader.parse(function(err, png){
-                if (err) throw err;
-
-                var image = {
-                    width: png.getWidth(),
-                    height: png.getHeight()
-                }
-                image.data = new Uint8Array(image.width * image.height * 4)
-                for(var j = 0; j < image.height; j++){
-                    for(var i = 0; i < image.width; i++){
-                        var offset = 4 * (i + j * image.width),
-                            pix = png.getPixel(i, j);
-
-                        image.data[offset] = pix[0];
-                        image.data[offset + 1] = pix[1];
-                        image.data[offset + 2] = pix[2];
-                        image.data[offset + 3] = pix[3];
-                    }
-                }
-                loadImage(image, cb);
-            });
-            return;
-        } else if (mime === 'image/jpeg'){
-            loadImage(require('jpeg-js').decode(image), cb);
-            return;
+            image.data[offset] = pix[0];
+            image.data[offset + 1] = pix[1];
+            image.data[offset + 2] = pix[2];
+            image.data[offset + 3] = pix[3];
+          }
         }
-
-        // TODO: support for TIFF, NetPBM, BMP, etc.
+        loadImage(image, cb);
+      });
+      return;
+    } if (mime === 'image/jpeg') {
+      loadImage(require('jpeg-js').decode(image), cb);
+      return;
     }
 
-    // node uses json.stringify for ipc which means we need to turn
-    // fancy arrays into raw arrays
-    if(image && image.data && image.data.length && !Array.isArray(image.data)){
-        image.data = Array.from(image.data);
-        return loadImage(image, cb)
-    }
-    cb(image);
+    // TODO: support for TIFF, NetPBM, BMP, etc.
+  }
+
+  // node uses json.stringify for ipc which means we need to turn
+  // fancy arrays into raw arrays
+  if (image && image.data && image.data.length && !Array.isArray(image.data)) {
+    image.data = Array.from(image.data);
+    return loadImage(image, cb);
+  }
+  cb(image);
 }

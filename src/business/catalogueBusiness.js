@@ -1,13 +1,16 @@
 const Joi = require('joi');
 const logger = require('winston');
+const Extension = require('joi-date-extensions');
 const CatalogueDao = require('../models/catalogueDao');
 
+const ExtendedJoi = Joi.extend(Extension);
 
 const catalogueSchema = {
-  id_brand: Joi.number().integer().required(),
-  period_ref: Joi.number().integer().required(),
-  year_ref: Joi.number().integer().required(),
-  description_ref: Joi.string().min(3).max(50).required(),
+  idBrand: Joi.required(),
+  idSegment: Joi.required(),
+  image: Joi.string(),
+  description: Joi.string().min(3).max(255).required(),
+  date: ExtendedJoi.date().format('DD-MM-YYYY').raw(),
 };
 
 class catalogueBusiness {
@@ -17,22 +20,21 @@ class catalogueBusiness {
 
   validateCatalogueData(catalogueData) {
     try {
-      Joi.validate(
-        {
-          id_brand: catalogueData.id_brand,
-          period_ref: catalogueData.period_ref,
-          year_ref: catalogueData.year_ref,
-          description_ref: catalogueData.description_ref,
-        }, catalogueSchema, (err) => {
-          if (err) {
-            logger.debug(err);
-            throw err;
-          } else {
-            new CatalogueDao(this.connection)
-              .insertCatalogue(catalogueData);
-          }
-        },
-      );
+      Joi.validate({
+        idBrand: catalogueData.idBrand,
+        idSegment: catalogueData.idSegment,
+        image: catalogueData.image,
+        description: catalogueData.description,
+        date: catalogueData.date,
+      }, catalogueSchema, (err) => {
+        if (err) {
+          logger.debug(err);
+          throw err;
+        } else {
+          new CatalogueDao(this.connection)
+            .insertCatalogue(catalogueData);
+        }
+      });
     } catch (error) {
       logger.error(error);
       throw error;

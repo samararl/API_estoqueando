@@ -13,7 +13,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.USER,
     pass: process.env.PASSWORD,
   },
-  tls: { rejectUnauthorized: false },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 class SendEmail {
@@ -22,12 +24,14 @@ class SendEmail {
     this.subject = subject;
   }
 
-  sendEmail() {
+  sendEmail(message) {
+    logger.debug('mensagem a ser enviaada');
+    logger.debug(message);
     const HelperOptions = {
       form: '"Estoqueando" <ifspestoqueando@gmail.com>',
       to: this.receiver,
       subject: this.subject,
-      html: '<b>Olá,</b><br>Este é o e-mail de confirmação para o seu cadastro na aplicação Estoqueando. Seja muito bem vindo(a)!<br>Por favor, acesse o link https://projetoestoqueando.blogspot.com/ para finalizar o seu cadastro. <br><br><font color="#FFD700"> Atenciosamente,<br><img src="https://ibb.co/jVPHaU">',
+      html: message,
       // html: readFile(emailconfirmacao)
     };
 

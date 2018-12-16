@@ -1,8 +1,7 @@
 const BrandDao = require('../models/brandDao');
 const BrandBusiness = require('../business/brandBusiness');
-const logger = require('winston');
 
-exports.get = (req, res, next) => {
+exports.get = (req, res) => {
   new BrandDao(req.connection)
     .list()
     .then(brands => res.status(200).json(brands.rows))
@@ -11,17 +10,11 @@ exports.get = (req, res, next) => {
 
 exports.put = (req, res) => {
   new BrandDao(req.connection)
-  .updateBrand(req.params.id, req.body.brandData)
-  .then(response => res.status(200).json(response))
-  .catch(response => res.status(500).json(response));
+    .updateBrand(req.params.id, req.body.brandData)
+    .then(response => res.status(200).json(response))
+    .catch(response => res.status(500).json(response));
 };
 
-exports.delete = (req, res) => {
-  new BrandDao(req.connection)
-  .deleteBrand(req.params.id)
-  .then(response => res.status(200).json(response))
-  .catch(response => res.status(500).json(response));
-};
 
 exports.post = (req, res) => {
   const response = {};
@@ -33,13 +26,7 @@ exports.post = (req, res) => {
     res.status(200).json(response);
   } catch (error) {
     response.success = false;
-    logger.error(error);
     response.message = error;
     res.status(500).json(response);
   }
-}
-
-
-
-
-
+};

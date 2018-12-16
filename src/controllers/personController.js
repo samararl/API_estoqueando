@@ -1,13 +1,6 @@
 const PersonDao = require('../models/personDao');
 const PersonBusiness = require('../business/personBusiness');
 
-exports.get = (req, res) => {
-  new PersonDao(req.connection)
-    .list()
-    .then(people => res.status(200).json(people.rows))
-    .catch(res.status(500).json('Falha no banco de dados.'));
-};
-
 exports.put = (req, res) => {
   new PersonDao(req.connection)
     .updatePerson(req.params.id, req.body.personData)
@@ -52,7 +45,13 @@ exports.findEmailController = (req, res) => {
     .catch(response => res.status(500).json(`Falha no banco de dados.${response}`));
 };
 
-exports.findCPFController = (req, res) => {
+exports.passwordReminder = (req, res, next) => {
+  new PersonDao(req.connection)
+    .passwordReminder(req.params.email);
+  res.status(200).send(`Requisição recebida com sucesso! ${req.params.email}`);
+};
+
+exports.findCPFController = (req, res, next) => {
   new PersonDao(req.connection)
     .findCPF(req.params.cpf)
     .then(result => res.status(200).json(result))

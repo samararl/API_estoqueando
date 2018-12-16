@@ -1,6 +1,7 @@
 const express = require('express');
 const personController = require('../controllers/personController');
 const productController = require('../controllers/productController');
+const purchaseOrderController = require('../controllers/purchaseOrderController');
 
 const router = express.Router();
 /**
@@ -60,15 +61,7 @@ const router = express.Router();
  *         description: Usuário não pôde ser criado
  */
 router.post('/createPerson', personController.post);
-
-/**
- * @swagger
- * /public/findEmail:
- *   get:
- *     tags:
- *       - Pública
- *     description: Retorna se o e-mail já existe
- *     produces:
+/*
  *       - application/json
  *     parameters:
  *       - email: query
@@ -98,6 +91,7 @@ router.get('/findEmail/:email', personController.findEmailController);
  */
 router.get('/findCPF/:cpf', personController.findCPFController);
 
-router.get('/getProducts', productController.get);
+router.get('/stock', productController.listStockProducts);
 
+router.post('/passwordReminder/:email', personController.passwordReminder);
 module.exports = router;

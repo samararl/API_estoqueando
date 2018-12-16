@@ -7,8 +7,8 @@ beforeAll(() => request(app)
   .post('/authenticate')
   .send({
     accessData: {
-      email: 'samararochalipolis@gmail.com',
-      password: 'samara',
+      email: 'ju@gmail.com',
+      password: 'jujuju',
     },
   })
   .set('Accept', 'application/json')
@@ -42,10 +42,10 @@ describe('POST /', () => {
     request(app).post('/catalogue/add')
       .send({
         catalogueData: {
-          id_brand: 4,
-          period_ref: 3,
-          year_ref: 2017,
-          description_ref: 'Dia dos pais',
+          idBrand: 1,
+          segment: 2,
+          year: 2017,
+          description: 'Dia dos pais',
         },
       })
       .set('Accept', 'application/json')
@@ -62,10 +62,10 @@ test('It should return error when insert a catalogue because it will not validat
     .set('Authorization', `Bearer  ${token.value}`)
     .send({
       catalogueData: {
-        id_brand: 'cod',
-        period_ref: 3,
-        year_ref: 2017,
-        description_ref: 'Dia dos pais',
+        idBrand: 'cod',
+        segment: 2,
+        year: 2017,
+        description: 'Dia dos pais',
       },
     })
     .set('Accept', 'application/json')
@@ -82,10 +82,10 @@ test('It should return insert a catalogue with success', (done) => {
     .set('Authorization', `Bearer  ${token.value}`)
     .send({
       catalogueData: {
-        id_brand: 4,
-        period_ref: 3,
-        year_ref: 2017,
-        description_ref: 'Dia dos pais',
+        idBrand: 1,
+        segment: 2,
+        year: 2017,
+        description: 'Dia dos pais',
       },
     })
     .set('Accept', 'application/json')
@@ -93,6 +93,44 @@ test('It should return insert a catalogue with success', (done) => {
     .end((err) => {
       if (err) return done(err);
       return true;
+      done();
+    });
+});
+
+test('It should update a catalogue with success', (done) => {
+  request(app).put('/catalogue/1')
+    .set('Authorization', `Bearer ${token.value}`)
+    .send({
+      catalogueData: {
+        idBrand: 1,
+        segment: 2,
+        year: 2017,
+        description: 'Dia dos pais',
+      },
+    })
+    .set('Accept', 'application/json')
+    .expect(200)
+    .end((err) => {
+      if (err) return done(err);
+      done();
+    });
+});
+
+test('It should update a catalogue with error', (done) => {
+  request(app).put('/catalogue/1')
+    .set('Authorization', `Bearer ${token.value}`)
+    .send({
+      catalogueData: {
+        idBrand: 'cod',
+        segment: 2,
+        year: 2017,
+        description: 'Dia dos pais',
+      },
+    })
+    .set('Accept', 'application/json')
+    .expect(200)
+    .end((err) => {
+      if (err) return done(err);
       done();
     });
 });

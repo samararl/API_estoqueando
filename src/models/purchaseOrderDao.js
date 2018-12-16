@@ -33,40 +33,45 @@ class PurchaseOrderDao {
 
   insertPurchaseOrder(purchaseOrderData) {
     const conexao = this.connection;
-    let returningIdPurchaseOrder = 0;
-    const reminder = new Reminder(6, 'teste', '31/10/2018');
+    logger.debug(purchaseOrderData);
+    let returnedIdPO = 0;
 
-    conexao.query('BEGIN', (errorBeginInsert) => {
-      this.shouldAbort(errorBeginInsert);
+    conexao.query('INSERT INTO PURCHASE_ORDER (id_consultant, status, dt_sale, obs) VALUES ($1, $2, $3, $4)  RETURNING id_purchase_order', [purchaseOrderData.idConsultant, 'A', purchaseOrderData.salesDate, purchaseOrderData.obs], (errInsertPurchaseOrder, purchaseOrder) => {
+      this.shouldAbort(errInsertPurchaseOrder);
+      returnedIdPO = purchaseOrder.rows[0].id_purchase_order;
 
-      conexao.query('INSERT INTO PURCHASE_ORDER (id_consultant, order_date, sales_date, obs, status) VALUES ($1, now(), $2, $3, $4)  RETURNING id_purchase_order', [purchaseOrderData.idConsultant, purchaseOrderData.salesDate, purchaseOrderData.obs, 'A'], (errorInsertPurchaseOrder, purchaseOrder) => {
-        this.shouldAbort(errorInsertPurchaseOrder);
-        returningIdPurchaseOrder = purchaseOrder.rows[0].id_purchase_order;
-        let totalPrice = 0;
-        purchaseOrderData.products.forEach((value) => {
-          totalPrice += value.price_product;
-          conexao.query('INSERT INTO PRODUCT_PURCHASE_ORDER (id_purchase_order, id_product, qtd_product) VALUES ($1, $2, $3)', [returningIdPurchaseOrder, value.idProduct, value.qtdProduct], (errorInsertProductPurchaseOrder) => {
-            this.shouldAbort(errorInsertProductPurchaseOrder);
-          });
+
+      let totalPrice = 0;
+      purchaseOrderData.products.forEach((value) => {
+        totalPrice += value.priceProduct;
+        conexao.query('INSERT INTO PRODUCT_PURCHASE_ORDER (id_purchase_order, id_product, qtd_product) VALUES ($1, $2, $3)', [returnedIdPO, value.idProduct, value.qtdProduct], (errorInsertProductPurchaseOrder) => {
+          this.shouldAbort(errorInsertProductPurchaseOrder);
         });
-
-        conexao.query('UPDATE PURCHASE_ORDER SET total_price = $1 WHERE id_purchase_order = $2', [totalPrice, returningIdPurchaseOrder], (errorPutTotalPrice) => {
-          this.shouldAbort(errorPutTotalPrice);
-        });
-        new ReminderDao(this.connection).insertReminder(reminder);
       });
 
-      conexao.query('COMMIT', (errorCommit) => {
-        if (errorCommit) {
-          logger.error('Error committing stock transaction', errorCommit.stack);
-        }
+      conexao.query('UPDATE PURCHASE_ORDER SET total_price = $1 WHERE id_purchase_order = $2', [totalPrice, returnedIdPO], (errorPutTotalPrice) => {
+        this.shouldAbort(errorPutTotalPrice);
       });
-      return true;
+
+      const wantReminder = true;
+
+      const reminderData = new Reminder();
+      reminderData.idPurchaseOrder = returnedIdPO;
+      reminderData.reminderText = 'Não se esqueça de lançar o pedido junto à marca';
+      reminderData.dtRef = '25-11-2018';
+
+
+      new ReminderDao(this.connection).insertReminder(reminderData);
+      if (wantReminder === true) {
+        logger.debug(reminderData);
+      } else {
+        logger.debug('Não quer');
+      }
     });
   }
 
   updatePurchaseorder(id, purchaseOrderData) {
-    return new Promise((resolve, reject) => this.connection.query('UPDATE PURCHASE_ORDER SET id_consultant = $1, order_date = $2, total_price = $3, sales_date = $4, status = $5 WHERE id_purchase_order = $6', [purchaseOrderData.id_consultant, purchaseOrderData.order_date, purchaseOrderData.total_price, purchaseOrderData.sales_date, purchaseOrderData.status, id], (err, purchaseOrders) => {
+    return new Promise((resolve, reject) => this.connection.query('UPDATE PURCHASE_ORDER SET id_consultant = $1, order_date = $2, total_price = $3, sales_date = $4, status = $5 WHERE id_purchase_order = $6', [purchaseOrderData.idConsultant, purchaseOrderData.orderDate, purchaseOrderData.totalPrice, purchaseOrderData.salesDate, purchaseOrderData.status, id], (err, purchaseOrders) => {
       if (err) {
         logger.error(err);
         reject(err);
@@ -74,15 +79,6 @@ class PurchaseOrderDao {
       resolve(purchaseOrders);
     }));
   }
-
-  putTotalPrice(id, totalPrice) {
-    const conexao = this.connection;
-
-    connection.query('UPDATE PURCHASE_ORDER SET total_price = $1 WHERE id_purchase_order = $2', [totalPrice, id], (errorPutTotalPrice) => {
-      this.shouldAbort(errorPutTotalPrice);
-    });
-  }
-
 
   disableProduct(id) {
     return new Promise((resolve, reject) => this.connection.query('UPDATE PURCHASE_ORDER SET active = 0 WHERE id_purchase_order = $1', [id], (err, purchaseOrders) => {
@@ -105,4 +101,5 @@ class PurchaseOrderDao {
     }));
   }
 }
+
 module.exports = PurchaseOrderDao;

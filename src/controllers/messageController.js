@@ -7,6 +7,18 @@ exports.post = (req, res) => {
     .catch(response => res.status(500).json(response));
 };
 
+exports.listMessageByPerson = (req, res) => {
+  new MessageDao(req.connection)
+    .listMessageByPerson(req.params.id)
+    .then(message => res.status(200).json(message))
+    .catch(message => res.status(500).json(message));
+};
+exports.getChat = (req, res) => {
+  new MessageDao(req.connection)
+    .getChat(req.params.to, req.params.from)
+    .then(message => res.status(200).json(message))
+    .catch(message => res.status(500).json(message));
+};
 exports.get = (req, res) => {
   new MessageDao(req.connection)
     .list()
